@@ -5,10 +5,18 @@
  */
 package com.parkerlee.util;
 
+import java.util.Locale;
+
 /**
  *
  * @author parkerlee
  */
 public class Translator {
+    
+    public static String getUserLanguage() {
+        String currentLocale = Locale.getDefault().getLanguage();
+        
+        return currentLocale;
+    }
     
 }

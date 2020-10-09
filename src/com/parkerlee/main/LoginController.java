@@ -7,6 +7,7 @@ package com.parkerlee.main;
 
 import com.parkerlee.model.User;
 import com.parkerlee.model.UserDAO;
+import com.parkerlee.util.Translator;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -55,7 +56,17 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        String lang = Translator.getUserLanguage();
+        
+        if (lang.equals("fr")) {
+            titleText.setText("Utilisateur en Ligne");
+            usernameTextField.setPromptText("Nom d'utilisateur");
+            passwordTextField.setPromptText("Mot de passe");
+            loginButton.setText("S'identifier");
+            credentialsText.setText("Veuillez vous connecter avec les informations d'identification suivantes:");
+            usernameText.setText("Nom d'utilisateur: root");
+            passwordText.setText("Mot de passe: toor");
+        }
     }   
     
     @FXML
@@ -71,12 +82,15 @@ public class LoginController implements Initializable {
             String dbPassword = user.getPasswordProperty().getValue();
             
             if (username.equals(dbUsername) && password.equals(dbPassword)) {
-                System.out.println("Success");
                 errorText.setText("");
                 // navigate to customer window
             } else {
-                System.out.println("Failure");
-                errorText.setText("There was an error with the username and/or password provided.");
+                String lang = Translator.getUserLanguage();
+                if (lang.equals("fr")) {
+                    errorText.setText("Une erreur s'est produite avec le nom d'utilisateur et / ou le mot de passe fournis.");
+                } else {
+                    errorText.setText("There was an error with the username and/or password provided.");
+                }
             }
         });
     }

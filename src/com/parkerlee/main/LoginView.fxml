@@ -10,21 +10,21 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.parkerlee.main.LoginController">
    <children>
-      <Label fx:id="titleText" layoutX="242.0" layoutY="14.0" text="User Login">
+      <Label fx:id="titleText" alignment="CENTER" layoutX="26.0" layoutY="14.0" prefHeight="29.0" prefWidth="549.0" text="User Login">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
       <Line endX="272.5" layoutX="301.0" layoutY="54.0" startX="-275.5" />
       <TextField fx:id="usernameTextField" layoutX="198.0" layoutY="100.0" prefHeight="27.0" prefWidth="205.0" promptText="Username" />
-      <Button fx:id="loginButton" layoutX="276.0" layoutY="200.0" mnemonicParsing="false" onAction="#loginButtonPressed" text="Login" />
-      <Label fx:id="credentialsText" layoutX="186.0" layoutY="267.0" text="Please login with the following credentials:" textFill="ROYALBLUE" />
-      <Label fx:id="usernameText" layoutX="246.0" layoutY="292.0" text="Username: root">
+      <Button fx:id="loginButton" alignment="CENTER" contentDisplay="CENTER" layoutX="220.0" layoutY="200.0" mnemonicParsing="false" onAction="#loginButtonPressed" prefHeight="27.0" prefWidth="155.0" text="Login" />
+      <Label fx:id="credentialsText" alignment="CENTER" contentDisplay="CENTER" layoutX="31.0" layoutY="268.0" prefHeight="17.0" prefWidth="532.0" text="Please login with the following credentials:" textFill="ROYALBLUE" />
+      <Label fx:id="usernameText" alignment="CENTER" layoutX="117.0" layoutY="292.0" prefHeight="20.0" prefWidth="368.0" text="Username: root">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label fx:id="passwordText" layoutX="248.0" layoutY="312.0" text="Password: toor">
+      <Label fx:id="passwordText" alignment="CENTER" layoutX="116.0" layoutY="312.0" prefHeight="20.0" prefWidth="368.0" text="Password: toor">
          <font>
             <Font size="16.0" />
          </font>
