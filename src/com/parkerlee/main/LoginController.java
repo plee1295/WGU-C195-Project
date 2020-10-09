@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 /**
@@ -32,7 +33,7 @@ public class LoginController implements Initializable {
     private TextField usernameTextField;
 
     @FXML
-    private TextField passwordTextField;
+    private PasswordField passwordTextField;
 
     @FXML
     private Button loginButton;
@@ -45,6 +46,9 @@ public class LoginController implements Initializable {
 
     @FXML
     private Label passwordText;
+    
+    @FXML
+    private Label errorText;
 
     /**
      * Initializes the controller class.
@@ -63,8 +67,17 @@ public class LoginController implements Initializable {
         ObservableList<User> userList = UserDAO.getAllRecords();
         
         userList.forEach((user) -> {
-            System.out.println(user.getUsernameProperty().getValue());
-            System.out.println(user.getPasswordProperty().getValue());
+            String dbUsername = user.getUsernameProperty().getValue();
+            String dbPassword = user.getPasswordProperty().getValue();
+            
+            if (username.equals(dbUsername) && password.equals(dbPassword)) {
+                System.out.println("Success");
+                errorText.setText("");
+                // navigate to customer window
+            } else {
+                System.out.println("Failure");
+                errorText.setText("There was an error with the username and/or password provided.");
+            }
         });
     }
     
