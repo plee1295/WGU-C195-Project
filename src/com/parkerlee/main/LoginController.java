@@ -7,18 +7,27 @@ package com.parkerlee.main;
 
 import com.parkerlee.model.User;
 import com.parkerlee.model.UserDAO;
+import com.parkerlee.util.Location;
 import com.parkerlee.util.Translator;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -50,14 +59,23 @@ public class LoginController implements Initializable {
     
     @FXML
     private Label errorText;
+    
+    @FXML
+    private Label loadingText;
+    
+    @FXML
+    private Label userLocationText;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        String lang = Translator.getUserLanguage();
         
+        String userLocation = Location.getUserLocationInfo();
+        userLocationText.setText(userLocation);
+        
+        String lang = Translator.getUserLanguage();
         if (lang.equals("fr")) {
             titleText.setText("Utilisateur en Ligne");
             usernameTextField.setPromptText("Nom d'utilisateur");
@@ -70,7 +88,15 @@ public class LoginController implements Initializable {
     }   
     
     @FXML
-    void loginButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
+    void loginButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException, IOException {
+        
+        String lang = Translator.getUserLanguage();
+        if (lang.equals("fr")) {
+            loadingText.setText("Se charge...");
+        } else {
+            loadingText.setText("Loading...");
+        }
+        loginButton.setDisable(true);
         
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
@@ -83,9 +109,19 @@ public class LoginController implements Initializable {
             
             if (username.equals(dbUsername) && password.equals(dbPassword)) {
                 errorText.setText("");
-                // navigate to customer window
+                
+                try {
+                    Parent parent = FXMLLoader.load(getClass().getResource("CustomerView.fxml"));
+                    Scene scene = new Scene(parent);
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setScene(scene);
+                    stage.show();
+                    
+                } catch (IOException ex) {
+                    Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             } else {
-                String lang = Translator.getUserLanguage();
                 if (lang.equals("fr")) {
                     errorText.setText("Une erreur s'est produite avec le nom d'utilisateur et / ou le mot de passe fournis.");
                 } else {
@@ -93,6 +129,9 @@ public class LoginController implements Initializable {
                 }
             }
         });
+        
+        loadingText.setText("");
+        loginButton.setDisable(false);
     }
     
 }

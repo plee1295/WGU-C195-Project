@@ -32,5 +32,7 @@
       <Line endX="127.0" layoutX="300.0" layoutY="247.0" startX="-129.0" />
       <Label fx:id="errorText" alignment="CENTER" contentDisplay="CENTER" layoutX="76.0" layoutY="355.0" prefHeight="17.0" prefWidth="442.0" textFill="RED" />
       <PasswordField fx:id="passwordTextField" layoutX="196.0" layoutY="147.0" prefHeight="27.0" prefWidth="205.0" promptText="Password" />
+      <Label fx:id="loadingText" layoutX="388.0" layoutY="205.0" prefHeight="17.0" prefWidth="155.0" />
+      <Label fx:id="userLocationText" alignment="CENTER_RIGHT" layoutX="376.0" layoutY="6.0" prefHeight="17.0" prefWidth="217.0" />
    </children>
 </AnchorPane>
