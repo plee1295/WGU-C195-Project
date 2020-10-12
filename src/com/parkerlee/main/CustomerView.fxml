@@ -17,13 +17,14 @@
             <Font size="24.0" />
          </font></Label>
       <Line endX="392.99993896484375" endY="-1.0000038146972656" layoutX="393.0" layoutY="43.0" startX="-380.0" startY="-1.0000038146972656" />
-      <TableView fx:id="customerTableView" layoutX="1.0" layoutY="308.0" prefHeight="292.0" prefWidth="801.0">
+      <TableView fx:id="customerTableView" layoutX="1.0" layoutY="308.0" prefHeight="292.0" prefWidth="800.0">
         <columns>
-          <TableColumn fx:id="customerIdColumn" prefWidth="75.0" text="ID" />
-          <TableColumn fx:id="customerNameColumn" prefWidth="166.8782730102539" text="Name" />
-            <TableColumn fx:id="customerAddressColumn" prefWidth="260.8974914550781" text="Address" />
-            <TableColumn fx:id="customerPostalCodeColumn" prefWidth="114.60064697265625" text="Postal Code" />
-            <TableColumn fx:id="customerPhoneNumberColumn" prefWidth="178.60797119140625" text="Phone Number" />
+          <TableColumn fx:id="customerIdColumn" prefWidth="53.0" text="ID" />
+          <TableColumn fx:id="customerNameColumn" prefWidth="143.0" text="Name" />
+            <TableColumn fx:id="customerAddressColumn" prefWidth="243.0" text="Address" />
+            <TableColumn fx:id="customerPostalCodeColumn" prefWidth="94.0" text="Postal Code" />
+            <TableColumn fx:id="customerDivisionColumn" prefWidth="140.08245849609375" text="Division" />
+            <TableColumn fx:id="customerPhoneNumberColumn" prefWidth="125.91741943359375" text="Phone Number" />
         </columns>
       </TableView>
       <TextField fx:id="customerNameTextField" layoutX="278.0" layoutY="65.0" prefHeight="27.0" prefWidth="255.0" promptText="Name" />
@@ -44,7 +45,7 @@
          </font>
       </Label>
       <Button layoutX="607.0" layoutY="120.0" mnemonicParsing="false" onAction="#addCustomerButtonPressed" prefHeight="27.0" prefWidth="114.0" text="Add Customer" />
-      <Button layoutX="607.0" layoutY="160.0" mnemonicParsing="false" text="Update Customer" />
+      <Button layoutX="607.0" layoutY="160.0" mnemonicParsing="false" onAction="#updateCustomerButtonPressed" text="Update Customer" />
       <Button layoutX="607.0" layoutY="200.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="114.0" text="Delete Customer" />
    </children>
 </AnchorPane>

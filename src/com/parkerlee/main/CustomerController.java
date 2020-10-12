@@ -12,6 +12,10 @@ import com.parkerlee.model.CustomerDAO;
 import com.parkerlee.model.Division;
 import com.parkerlee.model.DivisionDAO;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,22 +29,25 @@ import javafx.scene.control.TextField;
 public class CustomerController {
 
     @FXML
-    private TableView<?> customerTableView;
+    private TableView<Customer> customerTableView;
 
     @FXML
-    private TableColumn<?, ?> customerIdColumn;
+    private TableColumn<Customer, Integer> customerIdColumn;
 
     @FXML
-    private TableColumn<?, ?> customerNameColumn;
+    private TableColumn<Customer, String> customerNameColumn;
 
     @FXML
-    private TableColumn<?, ?> customerAddressColumn;
+    private TableColumn<Customer, String> customerAddressColumn;
 
     @FXML
-    private TableColumn<?, ?> customerPostalCodeColumn;
+    private TableColumn<Customer, String> customerPostalCodeColumn;
+    
+    @FXML
+    private TableColumn<Customer, Integer> customerDivisionColumn;
 
     @FXML
-    private TableColumn<?, ?> customerPhoneNumberColumn;
+    private TableColumn<Customer, String> customerPhoneNumberColumn;
 
     @FXML
     private TextField customerNameTextField;
@@ -65,28 +72,77 @@ public class CustomerController {
     
     @FXML
     public void initialize() throws Exception {
+        
+        // Initialize starting values for customerTableView
+        customerIdColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty().asObject());
+        customerNameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
+        customerAddressColumn.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
+        customerPostalCodeColumn.setCellValueFactory(cellData -> cellData.getValue().getPostalCodeProperty());
+        customerDivisionColumn.setCellValueFactory(cellData -> cellData.getValue().getDivisionIdProperty().asObject());
+        customerPhoneNumberColumn.setCellValueFactory(cellData -> cellData.getValue().getPhoneNumberProperty());
+        
+        ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
+        populateTable(customerList);
 
-          // Initialize country names combo box
-          ObservableList<Country> countryList = CountryDAO.getAllRecords();
-          ObservableList<String> countryNames = FXCollections.observableArrayList();
+        // Initialize country names combo box
+        ObservableList<Country> countryList = CountryDAO.getAllRecords();
+        ObservableList<String> countryNames = FXCollections.observableArrayList();
           
-          countryList.forEach((country) -> {
-              String countryToAdd = country.getCountryNameProperty().getValue();
-              countryNames.add(countryToAdd);
-          });
+        countryList.forEach((country) -> {
+            String countryToAdd = country.getCountryNameProperty().getValue();
+            countryNames.add(countryToAdd);
+        });
           
-          countryComboBox.setItems(countryNames);
+        countryComboBox.setItems(countryNames);
+        
+        // get selected customer data
+        customerTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                functionTitleText.setText("Update/Delete");
+                
+                Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+                
+                String name = customer.getNameProperty().getValue();
+                String address = customer.getAddressProperty().getValue();
+                String zip = customer.getPostalCodeProperty().getValue();
+                String phone = customer.getPhoneNumberProperty().getValue();
+                
+                // TODO
+                // get division value where division_id = id AND SET
+                int divisionId = customer.getDivisionIdProperty().getValue();
+                try {
+                    String divisionName = DivisionDAO.getDivisionName(divisionId);
+                    int countryId = CountryDAO.getCountryIdFromDivisionId(divisionId);
+                    String countryName = CountryDAO.getCountryName(countryId);
+                    
+                    firstLevelDivisionComboBox.setValue(divisionName);
+                    countryComboBox.setValue(countryName);
+                    
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                customerNameTextField.setText(name);
+                customerAddressTextField.setText(address);
+                postalCodeTextField.setText(zip);
+                phoneNumberTextField.setText(phone);
+            }
+        });
         
     }
     
-    // TODO: show customers in tableview
+    private void populateTable(ObservableList<Customer> customerList) {
+        customerTableView.setItems(customerList);
+    }
+    
     // TODO: add validation
-    // TODO: clear values after successful insertion
     @FXML
     void addCustomerButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         try {
             String customerName = customerNameTextField.getText();
-            String customerAddress = customerAddressColumn.getText();
+            String customerAddress = customerAddressTextField.getText();
             String customerCountry = countryComboBox.getValue();
             String customerPostalCode = postalCodeTextField.getText();
             String customerPhoneNumber = phoneNumberTextField.getText();
@@ -96,8 +152,18 @@ public class CustomerController {
         
             CustomerDAO.insertCustomer(customerName, customerAddress, selectedDivisionId, customerPostalCode, customerPhoneNumber);
             
-//            ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
-//            populateTable(customerList);
+            ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
+            populateTable(customerList);
+            
+            // Clear text fields
+            customerNameTextField.clear();
+            customerAddressTextField.clear();
+            countryComboBox.getSelectionModel().clearSelection();
+            countryComboBox.setPromptText("Select Country");
+            firstLevelDivisionComboBox.getSelectionModel().clearSelection();
+            firstLevelDivisionComboBox.setPromptText("Select Division");
+            postalCodeTextField.clear();
+            phoneNumberTextField.clear();
             
         } catch (SQLException e) {
             System.out.println("Error adding employee to database: " + e);
@@ -106,6 +172,32 @@ public class CustomerController {
         }
         
         
+    }
+    
+    @FXML
+    void updateCustomerButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
+        try {
+            String name = customerNameTextField.getText();
+            String address = customerAddressTextField.getText();
+            String zip = postalCodeTextField.getText();
+            String phone = phoneNumberTextField.getText();
+            
+            Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+            int customerId = customer.getIdProperty().getValue();
+            
+            String customerFLD = firstLevelDivisionComboBox.getValue();
+            int divisionId = DivisionDAO.getSelectedDivisionId(customerFLD);
+            
+            CustomerDAO.updateCustomer(customerId, name, address, divisionId, zip, phone);
+            
+            ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
+            populateTable(customerList);
+            
+        } catch (SQLException e) {
+            System.out.println("Error occurred while updating customer data: " + e);
+            e.printStackTrace();
+            throw e;
+        }
     }
     
     @FXML

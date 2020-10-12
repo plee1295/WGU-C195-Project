@@ -74,4 +74,23 @@ public class DivisionDAO {
         }
     }
     
+    public static String getDivisionName(int id) throws ClassNotFoundException, SQLException {
+        String query = "select Division from first_level_divisions where Division_ID = "+id+"";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            if(rs.next()) {
+                String name = rs.getString(1);
+                return name;
+            }
+            // TODO: THROW EXCEPTION/ERROR
+            return "";
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting division name from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
 }

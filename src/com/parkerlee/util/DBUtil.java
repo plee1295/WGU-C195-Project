@@ -33,7 +33,7 @@ public class DBUtil {
             throw e;
         }
         
-        System.out.println("JDBC Driver has been registered...");
+//        System.out.println("JDBC Driver has been registered...");
         
         try {
             connection = DriverManager.getConnection(connStr, "U06NB5", "53688812293");

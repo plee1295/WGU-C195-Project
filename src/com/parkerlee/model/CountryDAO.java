@@ -73,4 +73,42 @@ public class CountryDAO {
         }
     }
     
+    public static int getCountryIdFromDivisionId(int id) throws ClassNotFoundException, SQLException {
+        String query = "select COUNTRY_ID from first_level_divisions where Division_ID = "+id+"";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            if(rs.next()) {
+                int countryId = Integer.parseInt(rs.getString(1));
+                return countryId;
+            }
+            // TODO: THROW EXCEPTION/ERROR
+            return 0;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting country id from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    public static String getCountryName(int id) throws ClassNotFoundException, SQLException {
+        String query = "select Country from countries where Country_ID = "+id+"";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            if(rs.next()) {
+                String countryName = rs.getString(1);
+                return countryName;
+            }
+            // TODO: THROW EXCEPTION/ERROR
+            return "";
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting country name from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
 }
