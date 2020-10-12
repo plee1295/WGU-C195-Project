@@ -46,6 +46,6 @@
       </Label>
       <Button layoutX="607.0" layoutY="120.0" mnemonicParsing="false" onAction="#addCustomerButtonPressed" prefHeight="27.0" prefWidth="114.0" text="Add Customer" />
       <Button layoutX="607.0" layoutY="160.0" mnemonicParsing="false" onAction="#updateCustomerButtonPressed" text="Update Customer" />
-      <Button layoutX="607.0" layoutY="200.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="114.0" text="Delete Customer" />
+      <Button layoutX="607.0" layoutY="200.0" mnemonicParsing="false" onAction="#deleteCustomerButtonPressed" prefHeight="27.0" prefWidth="114.0" text="Delete Customer" />
    </children>
 </AnchorPane>

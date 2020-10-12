@@ -137,6 +137,17 @@ public class CustomerController {
         customerTableView.setItems(customerList);
     }
     
+    private void clearTextFields() {
+        customerNameTextField.clear();
+        customerAddressTextField.clear();
+        countryComboBox.getSelectionModel().clearSelection();
+        countryComboBox.setPromptText("Select Country");
+        firstLevelDivisionComboBox.getSelectionModel().clearSelection();
+        firstLevelDivisionComboBox.setPromptText("Select Division");
+        postalCodeTextField.clear();
+        phoneNumberTextField.clear();
+    }
+    
     // TODO: add validation
     @FXML
     void addCustomerButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
@@ -155,15 +166,7 @@ public class CustomerController {
             ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
             populateTable(customerList);
             
-            // Clear text fields
-            customerNameTextField.clear();
-            customerAddressTextField.clear();
-            countryComboBox.getSelectionModel().clearSelection();
-            countryComboBox.setPromptText("Select Country");
-            firstLevelDivisionComboBox.getSelectionModel().clearSelection();
-            firstLevelDivisionComboBox.setPromptText("Select Division");
-            postalCodeTextField.clear();
-            phoneNumberTextField.clear();
+            clearTextFields();
             
         } catch (SQLException e) {
             System.out.println("Error adding employee to database: " + e);
@@ -198,6 +201,26 @@ public class CustomerController {
             e.printStackTrace();
             throw e;
         }
+    }
+    
+    @FXML
+    void deleteCustomerButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
+        try {
+            Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+            int id = customer.getIdProperty().getValue();
+            
+            CustomerDAO.deleteCustomer(id);
+            
+            ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
+            populateTable(customerList);
+            
+        } catch (SQLException e) {
+            System.out.println("Error occurred while deleting employee from database: " + e);
+            e.printStackTrace();
+            throw e;
+        }
+        
+        clearTextFields();
     }
     
     @FXML

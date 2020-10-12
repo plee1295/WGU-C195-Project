@@ -67,6 +67,11 @@ public class CustomerDAO {
         execute(query, "Error updating customer in database");
     }
     
+    public static void deleteCustomer(int id) throws ClassNotFoundException, SQLException {
+        String query = "delete from customers where Customer_ID = '"+id+"' ";
+        execute(query, "Error deleting customer from database");
+    }
+    
     public static ObservableList<Customer> getAllRecords() throws ClassNotFoundException, SQLException {
         String query = "select * from customers";
         
