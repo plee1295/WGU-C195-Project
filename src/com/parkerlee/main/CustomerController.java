@@ -20,6 +20,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -201,6 +204,8 @@ public class CustomerController {
             e.printStackTrace();
             throw e;
         }
+        
+        functionTitleText.setText("Add");
     }
     
     @FXML
@@ -221,6 +226,11 @@ public class CustomerController {
         }
         
         clearTextFields();
+        
+        Alert alert = new Alert(AlertType.INFORMATION, "customer has been successfully deleted!", ButtonType.OK);
+            alert.showAndWait().filter(response -> response == ButtonType.OK);
+            
+        functionTitleText.setText("Add");
     }
     
     @FXML
