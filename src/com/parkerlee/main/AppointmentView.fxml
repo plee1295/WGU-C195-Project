@@ -20,8 +20,15 @@
       </Label>
       <TableView fx:id="appointmentTableView" layoutX="-2.0" layoutY="343.0" prefHeight="258.0" prefWidth="802.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
+          <TableColumn fx:id="apptIdColumn" prefWidth="35.55371820926666" text="ID" />
+          <TableColumn fx:id="titleColumn" prefWidth="114.44627380371094" text="Title" />
+            <TableColumn fx:id="descriptionColumn" prefWidth="142.45887756347656" text="Description" />
+            <TableColumn fx:id="locationColumn" prefWidth="96.54110717773438" text="Location" />
+            <TableColumn fx:id="contactIdColumn" prefWidth="67.60562133789062" text="Contact ID" />
+            <TableColumn fx:id="typeColumn" prefWidth="98.74713134765625" text="Type" />
+            <TableColumn fx:id="startColumn" prefWidth="90.283203125" text="Start" />
+            <TableColumn fx:id="endColumn" prefWidth="80.716796875" text="End" />
+            <TableColumn fx:id="customerIdColumn" prefWidth="75.87615966796875" text="Customer ID" />
         </columns>
       </TableView>
       <TextField fx:id="appointmentIdTextField" disable="true" layoutX="234.0" layoutY="104.0" promptText="Appointment ID" />
@@ -37,9 +44,19 @@
       <TextField fx:id="endTimeTextField" layoutX="425.0" layoutY="267.0" prefHeight="27.0" prefWidth="189.0" promptText="End Time (ex. 9:30 AM)" />
       <Line endX="-100.0" endY="177.68765258789062" layoutX="306.0" layoutY="150.0" startX="-100.0" startY="-76.03036499023438" />
       <Button layoutX="655.0" layoutY="144.0" mnemonicParsing="false" onAction="#addAppointmentButtonPressed" prefHeight="27.0" prefWidth="103.0" text="Add Appt." />
-      <Button layoutX="655.0" layoutY="185.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="104.0" text="Update Appt." />
+      <Button layoutX="655.0" layoutY="185.0" mnemonicParsing="false" onAction="#updateAppointmentButtonPressed" prefHeight="27.0" prefWidth="104.0" text="Update Appt." />
       <Button layoutX="655.0" layoutY="226.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="104.0" text="Delete Appt." />
       <Label fx:id="customerIdText" alignment="CENTER_RIGHT" layoutX="675.0" layoutY="65.0" prefHeight="17.0" prefWidth="107.0" />
       <Label fx:id="userIdText" layoutX="14.0" layoutY="37.0" prefHeight="17.0" prefWidth="107.0" />
+      <Label layoutX="33.0" layoutY="209.0" text="Appointment">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Label>
+      <Label fx:id="functionTitleText" alignment="CENTER" layoutX="18.0" layoutY="168.0" prefHeight="34.0" prefWidth="177.0">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

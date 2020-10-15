@@ -5,12 +5,14 @@
  */
 package com.parkerlee.main;
 
+import com.parkerlee.model.AppointmentDAO;
 import com.parkerlee.model.Country;
 import com.parkerlee.model.CountryDAO;
 import com.parkerlee.model.Customer;
 import com.parkerlee.model.CustomerDAO;
 import com.parkerlee.model.Division;
 import com.parkerlee.model.DivisionDAO;
+import com.parkerlee.util.CustomerSingleton;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -222,29 +224,36 @@ public class CustomerController {
         functionTitleText.setText("Add");
     }
     
+    // TODO: ASSURE no appointments for customer
     @FXML
     void deleteCustomerButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
-        try {
-            Customer customer = customerTableView.getSelectionModel().getSelectedItem();
-            int id = customer.getIdProperty().getValue();
+        
+        Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+        int id = customer.getIdProperty().getValue();
+        
+        if (!AppointmentDAO.hasAppointments(id)) {
+            try {
+                CustomerDAO.deleteCustomer(id);
+                ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
+                populateTable(customerList);
+            } catch (SQLException e) {
+                System.out.println("Error occurred while deleting employee from database: " + e);
+                e.printStackTrace();
+                throw e;
+            }
+        
+            clearTextFields();
+        
+            Alert alert = new Alert(AlertType.INFORMATION, "customer has been successfully deleted!", ButtonType.OK);
+                alert.showAndWait().filter(response -> response == ButtonType.OK);
             
-            CustomerDAO.deleteCustomer(id);
-            
-            ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
-            populateTable(customerList);
-            
-        } catch (SQLException e) {
-            System.out.println("Error occurred while deleting employee from database: " + e);
-            e.printStackTrace();
-            throw e;
+            functionTitleText.setText("Add");
+        } else {
+            Alert alert = new Alert(AlertType.WARNING, "Cannot delete customer with upcoming appointments.", ButtonType.OK);
+                alert.showAndWait().filter(response -> response == ButtonType.OK);
         }
         
-        clearTextFields();
         
-        Alert alert = new Alert(AlertType.INFORMATION, "customer has been successfully deleted!", ButtonType.OK);
-            alert.showAndWait().filter(response -> response == ButtonType.OK);
-            
-        functionTitleText.setText("Add");
     }
     
     @FXML
@@ -271,12 +280,14 @@ public class CustomerController {
     @FXML
     void getAppointmentsButtonPressed (ActionEvent event) throws IOException {
         try {
+            Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+            CustomerSingleton.id = customer.getIdProperty().getValue();
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AppointmentView.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             
-            Customer customer = customerTableView.getSelectionModel().getSelectedItem();
             AppointmentController controller = loader.getController();
             
             String userIdStr = userIdText.getText();

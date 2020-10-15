@@ -30,30 +30,53 @@ public class AppointmentDAO {
         }
     }
     
-//    private static ObservableList<Customer> getCustomerObjects(ResultSet rs) throws SQLException, ClassNotFoundException {
-//        try {
-//            ObservableList<Customer> customerList = FXCollections.observableArrayList();
-//            
-//            while (rs.next()) {
-//                Customer customer = new Customer();
-//                customer.setCustomerId(rs.getInt("Customer_ID"));
-//                customer.setCustomerDivisionId(rs.getInt("Division_ID"));
-//                customer.setCustomerName(rs.getString("Customer_Name"));
-//                customer.setCustomerAddress(rs.getString("Address"));
-//                customer.setCustomerPostalCode(rs.getString("Postal_Code"));
-//                customer.setCustomerPhoneNumber(rs.getString("Phone"));
-//                
-//                customerList.add(customer);
-//            }
-//            
-//            return customerList;
-//                    
-//        } catch (SQLException e) {
-//           System.out.println("Error getting customer objects: " + e);
-//            e.printStackTrace();
-//            throw e; 
-//        }
-//    }
+    private static ObservableList<Appointment> getAppointmentObjects(ResultSet rs) throws SQLException, ClassNotFoundException {
+        try {
+            ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
+            
+            while (rs.next()) {
+                Appointment appt = new Appointment();
+                appt.setAppointmentId(rs.getInt("Appointment_ID"));
+                appt.setAppointmentTitle(rs.getString("Title"));
+                appt.setAppointmentDescription(rs.getString("Description"));
+                appt.setAppointmentLocation(rs.getString("Location"));
+                appt.setContactId(rs.getInt("Contact_ID"));
+                appt.setAppointmentType(rs.getString("Type"));
+                appt.setAppointmentStartTime(rs.getString("Start"));
+                appt.setAppointmentEndTime(rs.getString("End"));
+                appt.setCustomerId(rs.getInt("Customer_ID"));
+                
+                appointmentList.add(appt);
+            }
+            
+            return appointmentList;
+                    
+        } catch (SQLException e) {
+           System.out.println("Error getting appointment objects: " + e);
+            e.printStackTrace();
+            throw e; 
+        }
+    }
+    
+    public static boolean hasAppointments(int customerId) throws SQLException, ClassNotFoundException {
+        String query = "select * from appointments where Customer_ID = "+customerId+"";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            ObservableList<Appointment> apptList = getAppointmentObjects(rs);
+            
+            if (apptList.isEmpty()) {
+                return false;
+            }
+            
+            return true;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting country data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
     
     public static void insertAppointment(String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) throws SQLException, ClassNotFoundException {
         String query = "insert into appointments"
@@ -62,20 +85,28 @@ public class AppointmentDAO {
         execute(query, "Error inserting appointment in database");
     }
     
-//    public static ObservableList<Customer> getAllRecords() throws ClassNotFoundException, SQLException {
-//        String query = "select * from customers";
-//        
-//        try {
-//            ResultSet rs = DBUtil.dbExecute(query);
-//            ObservableList<Customer> customerList = getCustomerObjects(rs);
-//            
-//            return customerList;
-//            
-//        } catch (SQLException e) {
-//            System.out.println("Error getting customer data from database" + e);
-//            e.printStackTrace();
-//            throw e;
-//        }
-//    }
+    public static void updateAppointment(int id, String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) throws ClassNotFoundException, SQLException {
+        String query = "update appointments set Title = '"+title+"', "
+                     + "Description = '"+description+"', Location = '"+location+"', Type = '"+type+"', "
+                     + "Start = '"+start+"', End = '"+end+"', Customer_ID = "+customerId+", User_ID = "+userId+", Contact_ID = '"+contactId+"' "
+                     + "where Appointment_ID = '"+id+"' ";
+        execute(query, "Error updating appointment in database");
+    }
+    
+    public static ObservableList<Appointment> getAllRecordsForCustomer(int customerId) throws ClassNotFoundException, SQLException {
+        String query = "select * from appointments where Customer_ID = "+customerId+"";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            ObservableList<Appointment> appointmentList = getAppointmentObjects(rs);
+            
+            return appointmentList;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting appointment data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
     
 }

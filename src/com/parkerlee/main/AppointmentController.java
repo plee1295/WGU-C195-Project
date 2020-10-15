@@ -9,9 +9,8 @@ import com.parkerlee.model.Appointment;
 import com.parkerlee.model.AppointmentDAO;
 import com.parkerlee.model.Contact;
 import com.parkerlee.model.ContactDAO;
-import com.parkerlee.model.Country;
-import com.parkerlee.model.CountryDAO;
 import com.parkerlee.model.Customer;
+import com.parkerlee.util.CustomerSingleton;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -20,21 +19,20 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.scene.control.TableColumn;
 
 /**
  * FXML Controller class
@@ -52,6 +50,33 @@ public class AppointmentController implements Initializable {
     
     @FXML
     private TableView<Appointment> appointmentTableView;
+
+    @FXML
+    private TableColumn<Appointment, Integer> apptIdColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> titleColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> descriptionColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> locationColumn;
+
+    @FXML
+    private TableColumn<Appointment, Integer> contactIdColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> typeColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> startColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> endColumn;
+
+    @FXML
+    private TableColumn<Appointment, Integer> customerIdColumn;
 
     @FXML
     private TextField appointmentIdTextField;
@@ -85,12 +110,40 @@ public class AppointmentController implements Initializable {
     
     @FXML
     private Label userIdText;
+    
+    @FXML
+    private Label functionTitleText;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        functionTitleText.setText("Add");
+
+        apptIdColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty().asObject());
+        titleColumn.setCellValueFactory(cellData -> cellData.getValue().getTitleProperty());
+        descriptionColumn.setCellValueFactory(cellData -> cellData.getValue().getDescriptionProperty());
+        locationColumn.setCellValueFactory(cellData -> cellData.getValue().getLocationProperty());
+        contactIdColumn.setCellValueFactory(cellData -> cellData.getValue().getContactIdProperty().asObject());
+        typeColumn.setCellValueFactory(cellData -> cellData.getValue().getTypeProperty());
+        startColumn.setCellValueFactory(cellData -> cellData.getValue().getStartTimeProperty());
+        endColumn.setCellValueFactory(cellData -> cellData.getValue().getEndTimeProperty());
+        customerIdColumn.setCellValueFactory(cellData -> cellData.getValue().getCustomerIdProperty().asObject());
+        
+        int customerId = CustomerSingleton.id;
+        System.out.println("Customer ID: " + customerId);
+        
+        ObservableList<Appointment> appointmentList;
+        try {
+            appointmentList = AppointmentDAO.getAllRecordsForCustomer(customerId);
+            populateTable(appointmentList);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AppointmentController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(AppointmentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         // Initialize contact names combo box
         ObservableList<Contact> contactList;
@@ -110,6 +163,91 @@ public class AppointmentController implements Initializable {
         } catch (SQLException ex) {
             Logger.getLogger(AppointmentController.class.getName()).log(Level.SEVERE, null, ex);
         } 
+        
+        // get selected appointment data
+        appointmentTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                functionTitleText.setText("Update/Delete");
+                
+                Appointment appt = appointmentTableView.getSelectionModel().getSelectedItem();
+                
+                int apptId = appt.getIdProperty().getValue();
+                String title = appt.getTitleProperty().getValue();
+                String description = appt.getDescriptionProperty().getValue();
+                String location = appt.getLocationProperty().getValue();
+                int contactId = appt.getContactIdProperty().getValue();
+                String type = appt.getTypeProperty().getValue();
+                String start = appt.getStartTimeProperty().getValue();
+                String end = appt.getEndTimeProperty().getValue();
+
+                try {
+                    String contact = ContactDAO.getContactNameFromId(contactId);
+
+                    String[] startDateAndTime = convertToDateAndTime(start);
+                    String[] endDateAndTime = convertToDateAndTime(end);
+                    LocalDate startDate = convertStringToLocalDate(startDateAndTime[0]);
+                    String startTime = startDateAndTime[1];
+                    LocalDate endDate = convertStringToLocalDate(endDateAndTime[0]);
+                    String endTime = endDateAndTime[1];
+                    
+                    appointmentIdTextField.setText(Integer.toString(apptId));
+                    titleTextField.setText(title);
+                    descriptionTextField.setText(description);
+                    locationTextField.setText(location);
+                    contactComboBox.setValue(contact);
+                    typeTextField.setText(type);
+                    startDatePicker.setValue(startDate);
+                    startTimeTextField.setText(startTime);
+                    endDatePicker.setValue(endDate);
+                    endTimeTextField.setText(endTime);
+                    
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(CustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+    }
+    
+    private LocalDate convertStringToLocalDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        
+        return localDate;
+    }
+    
+    private String[] convertToDateAndTime(String str) { // 10/21/2020
+        String[] ans = new String[2];
+        
+        String[] getDateAndTime = str.split(" ");
+        String date = getDateAndTime[0]; // 2020-10-21
+        String time = getDateAndTime[1]; // 15:30:00.0
+        
+        // format date
+        String[] dateArr = date.split("-");
+        String year = dateArr[0];
+        String month = dateArr[1];
+        String day = dateArr[2];
+        
+        ans[0] = day + "/" + month + "/" + year;
+        
+        // format time
+        String[] timeArr = time.split(":");
+        int hour = Integer.parseInt(timeArr[0]);
+        int minute = Integer.parseInt(timeArr[1]);
+        
+        if (hour == 0) {
+            hour = 12;
+            ans[1] = Integer.toString(hour) + ":" + minute + " AM";
+        } else if (hour < 13) {
+            ans[1] = Integer.toString(hour) + ":" + minute + " PM";
+        } else if (hour >= 13) {
+            hour -= 12;
+            ans[1] = Integer.toString(hour) + ":" + minute + " PM";
+        }
+        
+        return ans;
     }
     
     private void populateTable(ObservableList<Appointment> appointmentList) {
@@ -117,12 +255,22 @@ public class AppointmentController implements Initializable {
     }
     
     public void getData(Customer customer, int userId) {
-        String customerName = customer.getNameProperty().getValue();
-        int customerId = customer.getIdProperty().getValue();
-        
-        titleText.setText("Appointments for " + customerName);
-        customerIdText.setText("Customer ID: " + customerId);
+        titleText.setText("Appointments for " + customer.getNameProperty().getValue());
         userIdText.setText("User ID: " + userId);
+        customerIdText.setText("Customer ID: " + customer.getIdProperty().getValue());
+    }
+    
+    public void clearTextFields() {
+        appointmentIdTextField.clear();
+        titleTextField.clear();
+        descriptionTextField.clear();
+        locationTextField.clear();
+        contactComboBox.getSelectionModel().clearSelection();
+        typeTextField.clear();
+        startDatePicker.getEditor().clear();
+        startTimeTextField.clear();
+        endDatePicker.getEditor().clear();
+        endTimeTextField.clear();
     }
     
     public LocalDateTime convertToTimestamp(String date, String time) {
@@ -184,16 +332,60 @@ public class AppointmentController implements Initializable {
         
             AppointmentDAO.insertAppointment(title, description, location, type, startTimestamp, endTimestamp, customerId, userId, contactId);
             
-//            ObservableList<Appointment> appointmentList = AppointmentDAO.getAllRecords();
-//            populateTable(appointmentList);
-//            
-//            clearTextFields();
+            ObservableList<Appointment> appointmentList = AppointmentDAO.getAllRecordsForCustomer(customerId);
+            populateTable(appointmentList);
+            
+            clearTextFields();
             
         } catch (SQLException e) {
             System.out.println("Error adding appointment to database: " + e);
             e.printStackTrace();
             throw e;
         }
+        
+        clearTextFields();
+    }
+    
+    @FXML
+    void updateAppointmentButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
+        try {
+            String title = titleTextField.getText();
+            String description = descriptionTextField.getText();
+            String location = locationTextField.getText();
+            String contact = contactComboBox.getValue();
+            String type = typeTextField.getText();
+            String startDate = startDatePicker.getValue().toString();
+            String startTime = startTimeTextField.getText();
+            String endDate = endDatePicker.getValue().toString();
+            String endTime = endTimeTextField.getText();
+            
+            String customerIdStr = customerIdText.getText();
+            int customerId = Integer.parseInt(customerIdStr.split(" ")[2]);
+            
+            String userIdStr = userIdText.getText();
+            int userId = Integer.parseInt(userIdStr.split(" ")[2]);
+            
+            int contactId = ContactDAO.getContactIdFromName(contact);
+            
+            LocalDateTime startTimestamp = convertToTimestamp(startDate, startTime);
+            LocalDateTime endTimestamp = convertToTimestamp(endDate, endTime);
+            
+            Appointment appt = appointmentTableView.getSelectionModel().getSelectedItem();
+            int apptId = appt.getIdProperty().getValue();
+            
+            AppointmentDAO.updateAppointment(apptId, title, description, location, type, startTimestamp, endTimestamp, customerId, userId, contactId);
+            
+            ObservableList<Appointment> apptList = AppointmentDAO.getAllRecordsForCustomer(customerId);
+            populateTable(apptList);
+            
+        } catch (SQLException e) {
+            System.out.println("Error occurred while updating customer data: " + e);
+            e.printStackTrace();
+            throw e;
+        }
+        
+        clearTextFields();
+        functionTitleText.setText("Add");
     }
     
 }

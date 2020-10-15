@@ -74,4 +74,23 @@ public class ContactDAO {
         }
     }
     
+    public static String getContactNameFromId(int id) throws ClassNotFoundException, SQLException {
+        String query = "select Contact_Name from contacts where Contact_ID = "+id+"";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            if(rs.next()) {
+                String name = rs.getString(1);
+                return name;
+            }
+            // TODO: THROW EXCEPTION/ERROR
+            return "";
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting contact name from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
 }
