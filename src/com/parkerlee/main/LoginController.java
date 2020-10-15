@@ -5,6 +5,7 @@
  */
 package com.parkerlee.main;
 
+import com.parkerlee.model.Customer;
 import com.parkerlee.model.User;
 import com.parkerlee.model.UserDAO;
 import com.parkerlee.util.Location;
@@ -101,6 +102,8 @@ public class LoginController implements Initializable {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         
+        
+        
         ObservableList<User> userList = UserDAO.getAllRecords();
         
         userList.forEach((user) -> {
@@ -111,9 +114,28 @@ public class LoginController implements Initializable {
                 errorText.setText("");
                 
                 try {
-                    Parent parent = FXMLLoader.load(getClass().getResource("CustomerView.fxml"));
-                    Scene scene = new Scene(parent);
+//                    Parent parent = FXMLLoader.load(getClass().getResource("CustomerView.fxml"));
+//                    Scene scene = new Scene(parent);
+//                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//                    stage.setScene(scene);
+//                    stage.show();
+                    
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerView.fxml"));
+                    Parent root = loader.load();
+                    Scene scene = new Scene(root);
                     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+                    int userId;
+                    try {
+                        userId = UserDAO.getCurrentUserId(usernameTextField.getText());
+                        CustomerController controller = loader.getController();
+                        controller.getData(userId);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            
                     stage.setScene(scene);
                     stage.show();
                     

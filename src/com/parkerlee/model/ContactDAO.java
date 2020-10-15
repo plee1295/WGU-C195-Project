@@ -15,48 +15,48 @@ import javafx.collections.ObservableList;
  *
  * @author parkerlee
  */
-public class UserDAO {
+public class ContactDAO {
     
-    private static ObservableList<User> getUserObjects(ResultSet rs) throws SQLException, ClassNotFoundException {
+    private static ObservableList<Contact> getContactObjects(ResultSet rs) throws SQLException, ClassNotFoundException {
         try {
-            ObservableList<User> userList = FXCollections.observableArrayList();
+            ObservableList<Contact> contactList = FXCollections.observableArrayList();
             
             while (rs.next()) {
-                User user = new User();
-                user.setUserId(rs.getInt("User_ID"));
-                user.setUserUsername(rs.getString("User_Name"));
-                user.setUserPassword(rs.getString("Password"));
+                Contact contact = new Contact();
+                contact.setContactId(rs.getInt("Contact_ID"));
+                contact.setContactName(rs.getString("Contact_Name"));
+                contact.setContactEmail(rs.getString("Email"));
                 
-                userList.add(user);
+                contactList.add(contact);
             }
             
-            return userList;
+            return contactList;
                     
         } catch (SQLException e) {
-           System.out.println("Error getting user objects: " + e);
+           System.out.println("Error getting contact objects: " + e);
             e.printStackTrace();
             throw e; 
         }
     }
     
-    public static ObservableList<User> getAllRecords() throws ClassNotFoundException, SQLException {
-        String query = "select * from users";
+    public static ObservableList<Contact> getAllRecords() throws ClassNotFoundException, SQLException {
+        String query = "select * from contacts";
         
         try {
             ResultSet rs = DBUtil.dbExecute(query);
-            ObservableList<User> userList = getUserObjects(rs);
+            ObservableList<Contact> contactList = getContactObjects(rs);
             
-            return userList;
+            return contactList;
             
         } catch (SQLException e) {
-            System.out.println("Error getting user data from database" + e);
+            System.out.println("Error getting contact data from database" + e);
             e.printStackTrace();
             throw e;
         }
     }
     
-    public static int getCurrentUserId(String username) throws ClassNotFoundException, SQLException {
-        String query = "select User_ID from users where User_Name = '"+username+"'";
+    public static int getContactIdFromName(String name) throws ClassNotFoundException, SQLException {
+        String query = "select Contact_ID from contacts where Contact_Name = '"+name+"'";
         
         try {
             ResultSet rs = DBUtil.dbExecute(query);
@@ -68,9 +68,10 @@ public class UserDAO {
             return 0;
             
         } catch (SQLException e) {
-            System.out.println("Error getting user id from database" + e);
+            System.out.println("Error getting contact id from database" + e);
             e.printStackTrace();
             throw e;
         }
     }
+    
 }

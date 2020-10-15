@@ -11,6 +11,7 @@ import com.parkerlee.model.Customer;
 import com.parkerlee.model.CustomerDAO;
 import com.parkerlee.model.Division;
 import com.parkerlee.model.DivisionDAO;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -28,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class CustomerController {
 
@@ -72,6 +78,9 @@ public class CustomerController {
 
     @FXML
     private Label functionTitleText;
+    
+    @FXML
+    private Label userIdText;
     
     @FXML
     public void initialize() throws Exception {
@@ -149,6 +158,11 @@ public class CustomerController {
         firstLevelDivisionComboBox.setPromptText("Select Division");
         postalCodeTextField.clear();
         phoneNumberTextField.clear();
+    }
+    
+    public void getData(int id) {
+        int userId = id;
+        userIdText.setText("User ID: " + id);
     }
     
     // TODO: add validation
@@ -253,6 +267,28 @@ public class CustomerController {
         
         firstLevelDivisionComboBox.setItems(divisionNames);
     }
-
+    
+    @FXML
+    void getAppointmentsButtonPressed (ActionEvent event) throws IOException {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AppointmentView.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            Customer customer = customerTableView.getSelectionModel().getSelectedItem();
+            AppointmentController controller = loader.getController();
+            
+            String userIdStr = userIdText.getText();
+            int userId = Integer.parseInt(userIdStr.split(" ")[2]);
+            
+            controller.getData(customer, userId);
+            
+            stage.setScene(scene);
+            stage.show();       
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
 
