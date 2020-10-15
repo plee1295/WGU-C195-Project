@@ -93,6 +93,11 @@ public class AppointmentDAO {
         execute(query, "Error updating appointment in database");
     }
     
+    public static void deleteAppointment(int id) throws ClassNotFoundException, SQLException {
+        String query = "delete from appointments where Appointment_ID = '"+id+"' ";
+        execute(query, "Error deleting appointment from database");
+    }
+    
     public static ObservableList<Appointment> getAllRecordsForCustomer(int customerId) throws ClassNotFoundException, SQLException {
         String query = "select * from appointments where Customer_ID = "+customerId+"";
         

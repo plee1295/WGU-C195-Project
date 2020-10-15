@@ -45,7 +45,7 @@
       <Line endX="-100.0" endY="177.68765258789062" layoutX="306.0" layoutY="150.0" startX="-100.0" startY="-76.03036499023438" />
       <Button layoutX="655.0" layoutY="144.0" mnemonicParsing="false" onAction="#addAppointmentButtonPressed" prefHeight="27.0" prefWidth="103.0" text="Add Appt." />
       <Button layoutX="655.0" layoutY="185.0" mnemonicParsing="false" onAction="#updateAppointmentButtonPressed" prefHeight="27.0" prefWidth="104.0" text="Update Appt." />
-      <Button layoutX="655.0" layoutY="226.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="104.0" text="Delete Appt." />
+      <Button layoutX="655.0" layoutY="226.0" mnemonicParsing="false" onAction="#deleteAppointmentButtonPressed" prefHeight="27.0" prefWidth="104.0" text="Delete Appt." />
       <Label fx:id="customerIdText" alignment="CENTER_RIGHT" layoutX="675.0" layoutY="65.0" prefHeight="17.0" prefWidth="107.0" />
       <Label fx:id="userIdText" layoutX="14.0" layoutY="37.0" prefHeight="17.0" prefWidth="107.0" />
       <Label layoutX="33.0" layoutY="209.0" text="Appointment">

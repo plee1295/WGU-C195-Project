@@ -224,7 +224,6 @@ public class CustomerController {
         functionTitleText.setText("Add");
     }
     
-    // TODO: ASSURE no appointments for customer
     @FXML
     void deleteCustomerButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         
@@ -251,9 +250,7 @@ public class CustomerController {
         } else {
             Alert alert = new Alert(AlertType.WARNING, "Cannot delete customer with upcoming appointments.", ButtonType.OK);
                 alert.showAndWait().filter(response -> response == ButtonType.OK);
-        }
-        
-        
+        }  
     }
     
     @FXML

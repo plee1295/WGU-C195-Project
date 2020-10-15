@@ -32,6 +32,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 
 /**
@@ -386,6 +389,33 @@ public class AppointmentController implements Initializable {
         
         clearTextFields();
         functionTitleText.setText("Add");
+    }
+    
+    @FXML
+    void deleteAppointmentButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
+        
+        Appointment appt = appointmentTableView.getSelectionModel().getSelectedItem();
+        int id = appt.getIdProperty().getValue();
+        
+        try {
+            AppointmentDAO.deleteAppointment(id);
+            String customerIdStr = customerIdText.getText();
+            int customerId = Integer.parseInt(customerIdStr.split(" ")[2]);
+            ObservableList<Appointment> apptList = AppointmentDAO.getAllRecordsForCustomer(customerId);
+            populateTable(apptList);
+        } catch (SQLException e) {
+            System.out.println("Error occurred while deleting appointment from database: " + e);
+            e.printStackTrace();
+            throw e;
+        }
+  
+        clearTextFields();
+        
+        Alert alert = new Alert(AlertType.INFORMATION, "Appointment has been successfully deleted!", ButtonType.OK);
+            alert.showAndWait().filter(response -> response == ButtonType.OK);
+            
+        functionTitleText.setText("Add");
+        
     }
     
 }
