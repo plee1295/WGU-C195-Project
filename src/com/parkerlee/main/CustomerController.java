@@ -298,5 +298,40 @@ public class CustomerController {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    @FXML
+    void scheduleButtonPressed (ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ScheduleView.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            ScheduleController controller = loader.getController();
+            
+            String userIdStr = userIdText.getText();
+            int userId = Integer.parseInt(userIdStr.split(" ")[2]);
+            controller.getData(userId);
+            
+            stage.setScene(scene);
+            stage.show();       
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    @FXML
+    void logoutButtonPressed (ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("LoginView.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            LoginController controller = loader.getController();
+            stage.setScene(scene);
+            stage.show();       
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
 

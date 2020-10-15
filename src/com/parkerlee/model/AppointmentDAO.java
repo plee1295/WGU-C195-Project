@@ -114,4 +114,52 @@ public class AppointmentDAO {
         }
     }
     
+    public static ObservableList<Appointment> getAllRecords() throws ClassNotFoundException, SQLException {
+        String query = "select * from appointments";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            ObservableList<Appointment> appointmentList = getAppointmentObjects(rs);
+            
+            return appointmentList;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting appointment data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    public static ObservableList<Appointment> getAllRecordsInNext7Days() throws ClassNotFoundException, SQLException {
+        String query = "select * from appointments WHERE Start BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            ObservableList<Appointment> appointmentList = getAppointmentObjects(rs);
+            
+            return appointmentList;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting appointments for next 7 days data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    public static ObservableList<Appointment> getAllRecordsInNextMonth() throws ClassNotFoundException, SQLException {
+        String query = "select * from appointments WHERE Start BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 1 MONTH)";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            ObservableList<Appointment> appointmentList = getAppointmentObjects(rs);
+            
+            return appointmentList;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting appointments for next 7 days data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
 }

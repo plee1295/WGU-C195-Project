@@ -58,5 +58,6 @@
             <Font size="28.0" />
          </font>
       </Label>
+      <Button layoutX="15.0" layoutY="2.0" mnemonicParsing="false" onAction="#backButtonPressed" text="&lt;- Back" />
    </children>
 </AnchorPane>

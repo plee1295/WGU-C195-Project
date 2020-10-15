@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.parkerlee.main.ScheduleController">
+   <children>
+      <Label alignment="CENTER" layoutX="17.0" layoutY="16.0" prefHeight="29.0" prefWidth="766.0" text="Upcoming Schedule">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Line endX="375.1055908203125" endY="3.814697265625E-6" layoutX="400.0" layoutY="53.0" startX="-381.0787353515625" startY="3.814697265625E-6" />
+      <Button layoutX="18.0" layoutY="57.0" mnemonicParsing="false" onAction="#backButtonPressed" text="&lt;- Back" />
+      <TableView fx:id="appointmentTableView" layoutX="-2.0" layoutY="232.0" prefHeight="369.0" prefWidth="802.0">
+        <columns>
+          <TableColumn fx:id="apptIdColumn" prefWidth="32.86029863357544" text="ID" />
+          <TableColumn fx:id="titleColumn" prefWidth="99.27128601074219" text="Title" />
+            <TableColumn fx:id="descriptionColumn" prefWidth="129.1164093017578" text="Description" />
+            <TableColumn fx:id="locationColumn" prefWidth="83.58151245117188" text="Location" />
+            <TableColumn fx:id="contactIdColumn" prefWidth="92.75201416015625" text="Contact" />
+            <TableColumn fx:id="typeColumn" prefWidth="89.06979370117188" text="Type" />
+            <TableColumn fx:id="startColumn" prefWidth="99.2945556640625" text="Start" />
+            <TableColumn fx:id="endColumn" prefWidth="96.70538330078125" text="End" />
+            <TableColumn fx:id="customerIdColumn" prefWidth="74.70562744140625" text="Customer ID" />
+        </columns>
+      </TableView>
+      <RadioButton fx:id="thisWeek" layoutX="310.0" layoutY="127.0" mnemonicParsing="false" text="Get Appointments for Week" />
+      <RadioButton fx:id="thisMonth" layoutX="310.0" layoutY="170.0" mnemonicParsing="false" text="Get Appointments for Month" />
+      <RadioButton fx:id="all" layoutX="310.0" layoutY="84.0" mnemonicParsing="false" text="Get All Appointments" />
+      <Label fx:id="userIdText" layoutX="18.0" layoutY="31.0" prefHeight="17.0" prefWidth="100.0" />
+   </children>
+</AnchorPane>
