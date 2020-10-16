@@ -78,6 +78,30 @@ public class AppointmentDAO {
         }
     }
     
+    public static boolean isDuplicateAppointmentTime(int customerId, LocalDateTime startTime, LocalDateTime endTime) throws SQLException, ClassNotFoundException {
+        String query = "SELECT COUNT(*) as Duplicate_Count FROM appointments " +
+                        "WHERE Customer_ID = "+customerId+" " +
+                        "AND ('"+startTime+"' BETWEEN Start AND End) " +
+                        "OR ('"+endTime+"' BETWEEN Start AND End) " +
+                        "OR (Start BETWEEN '"+startTime+"' AND '"+endTime+"') " +
+                        "OR (End BETWEEN '"+startTime+"' AND '"+endTime+"') ";
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            if(rs.next()) {
+                if (Integer.parseInt(rs.getString(1)) >= 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        } catch (SQLException e) {
+            System.out.println("Error getting appointment duplication data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    } 
+    
     public static void insertAppointment(String title, String description, String location, String type, LocalDateTime start, LocalDateTime end, int customerId, int userId, int contactId) throws SQLException, ClassNotFoundException {
         String query = "insert into appointments"
                      + "(Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID) "

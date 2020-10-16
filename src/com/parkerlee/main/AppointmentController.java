@@ -300,6 +300,9 @@ public class AppointmentController implements Initializable {
         if (timeArr[1].equals("AM") && Integer.parseInt(hourMinArr[0]) == 12) {
             hour = 0;
             minutes = Integer.parseInt(hourMinArr[1]);
+        } else if (timeArr[1].equals("PM") && Integer.parseInt(hourMinArr[0]) == 12) {       
+            hour = 12;
+            minutes = Integer.parseInt(hourMinArr[1]);
         } else if (timeArr[1].equals("AM")) {
             hour = Integer.parseInt(hourMinArr[0]);
             minutes = Integer.parseInt(hourMinArr[1]);
@@ -332,6 +335,9 @@ public class AppointmentController implements Initializable {
         
         if (timeArr[1].equals("AM") && Integer.parseInt(hourMinArr[0]) == 12) {
             hour = 0;
+            minutes = Integer.parseInt(hourMinArr[1]);
+        } else if (timeArr[1].equals("PM") && Integer.parseInt(hourMinArr[0]) == 12) {       
+            hour = 12;
             minutes = Integer.parseInt(hourMinArr[1]);
         } else if (timeArr[1].equals("AM")) {
             hour = Integer.parseInt(hourMinArr[0]);
@@ -391,17 +397,24 @@ public class AppointmentController implements Initializable {
             LocalDateTime endEST = convertToEST(endDate, endTime);
             
             boolean isValidAppointmentTime = validateAppointmentTime(startEST, endEST);
+            boolean isDuplicateAppointmentTime = AppointmentDAO.isDuplicateAppointmentTime(customerId, startTimestamp, endTimestamp);
         
             // if time is correct
             if (isValidAppointmentTime) {
-                AppointmentDAO.insertAppointment(title, description, location, type, startTimestamp, endTimestamp, customerId, userId, contactId);
+                if (!isDuplicateAppointmentTime) {
+                    AppointmentDAO.insertAppointment(title, description, location, type, startTimestamp, endTimestamp, customerId, userId, contactId);
             
-                ObservableList<Appointment> appointmentList = AppointmentDAO.getAllRecordsForCustomer(customerId);
-                populateTable(appointmentList);
+                    ObservableList<Appointment> appointmentList = AppointmentDAO.getAllRecordsForCustomer(customerId);
+                    populateTable(appointmentList);
             
-                clearTextFields();
+                    clearTextFields();
+                } else {
+                    Alert alert = new Alert(AlertType.WARNING, "Customer already has an appointment scheduled at this time.", ButtonType.OK);
+                        alert.showAndWait().filter(response -> response == ButtonType.OK);
+                }
+                
             } else {
-                Alert alert = new Alert(AlertType.INFORMATION, "Appointment must be made between 8am-10pm EST.", ButtonType.OK);
+                Alert alert = new Alert(AlertType.WARNING, "Appointment must be made between 8am-10pm EST.", ButtonType.OK);
                     alert.showAndWait().filter(response -> response == ButtonType.OK);
             }
 
