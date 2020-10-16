@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -315,6 +316,53 @@ public class AppointmentController implements Initializable {
 
     }
     
+    public LocalDateTime convertToEST(String date, String time) {
+        
+        // get date
+        String[] dateArr = date.split("-"); 
+        int year = Integer.parseInt(dateArr[0]);
+        int month = Integer.parseInt(dateArr[1]);
+        int day = Integer.parseInt(dateArr[2]);
+        
+        // get time
+        int hour = 0;
+        int minutes = 0;
+        String[] timeArr = time.split(" ");
+        String[] hourMinArr = timeArr[0].split(":");
+        
+        if (timeArr[1].equals("AM") && Integer.parseInt(hourMinArr[0]) == 12) {
+            hour = 0;
+            minutes = Integer.parseInt(hourMinArr[1]);
+        } else if (timeArr[1].equals("AM")) {
+            hour = Integer.parseInt(hourMinArr[0]);
+            minutes = Integer.parseInt(hourMinArr[1]);
+        } else if (timeArr[1].equals("PM")) {
+            hour = Integer.parseInt(hourMinArr[0]) + 12;
+            minutes = Integer.parseInt(hourMinArr[1]);
+        }
+        
+        LocalDateTime ldtInUserZone = LocalDateTime.of(year, month, day, hour, minutes);
+        ZonedDateTime zonedDateTime = ldtInUserZone.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("America/New_York"));
+        LocalDateTime timeToAdd = zonedDateTime.toLocalDateTime();
+        
+        return timeToAdd;
+    }
+    
+    public boolean validateAppointmentTime(LocalDateTime start, LocalDateTime end) {
+        int startHour = start.getHour();
+        int startMinute = start.getMinute();
+        int endHour = end.getHour();
+        int endMinute = end.getMinute();
+        
+        if (startHour >= 8 && startHour < 22 && endHour >= 8 && endHour <= 22) {
+            if (endHour == 22 && endMinute > 0) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    
     @FXML
     void addAppointmentButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         try {
@@ -338,21 +386,30 @@ public class AppointmentController implements Initializable {
             
             LocalDateTime startTimestamp = convertToTimestamp(startDate, startTime);
             LocalDateTime endTimestamp = convertToTimestamp(endDate, endTime);
+            
+            LocalDateTime startEST = convertToEST(startDate, startTime);
+            LocalDateTime endEST = convertToEST(endDate, endTime);
+            
+            boolean isValidAppointmentTime = validateAppointmentTime(startEST, endEST);
         
-            AppointmentDAO.insertAppointment(title, description, location, type, startTimestamp, endTimestamp, customerId, userId, contactId);
+            // if time is correct
+            if (isValidAppointmentTime) {
+                AppointmentDAO.insertAppointment(title, description, location, type, startTimestamp, endTimestamp, customerId, userId, contactId);
             
-            ObservableList<Appointment> appointmentList = AppointmentDAO.getAllRecordsForCustomer(customerId);
-            populateTable(appointmentList);
+                ObservableList<Appointment> appointmentList = AppointmentDAO.getAllRecordsForCustomer(customerId);
+                populateTable(appointmentList);
             
-            clearTextFields();
-            
+                clearTextFields();
+            } else {
+                Alert alert = new Alert(AlertType.INFORMATION, "Appointment must be made between 8am-10pm EST.", ButtonType.OK);
+                    alert.showAndWait().filter(response -> response == ButtonType.OK);
+            }
+
         } catch (SQLException e) {
             System.out.println("Error adding appointment to database: " + e);
             e.printStackTrace();
             throw e;
         }
-        
-        clearTextFields();
     }
     
     @FXML

@@ -114,12 +114,6 @@ public class LoginController implements Initializable {
                 errorText.setText("");
                 
                 try {
-//                    Parent parent = FXMLLoader.load(getClass().getResource("CustomerView.fxml"));
-//                    Scene scene = new Scene(parent);
-//                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//                    stage.setScene(scene);
-//                    stage.show();
-                    
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerView.fxml"));
                     Parent root = loader.load();
                     Scene scene = new Scene(root);
