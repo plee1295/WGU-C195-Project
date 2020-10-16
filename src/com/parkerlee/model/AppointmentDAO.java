@@ -81,10 +81,10 @@ public class AppointmentDAO {
     public static boolean isDuplicateAppointmentTime(int customerId, LocalDateTime startTime, LocalDateTime endTime) throws SQLException, ClassNotFoundException {
         String query = "SELECT COUNT(*) as Duplicate_Count FROM appointments " +
                         "WHERE Customer_ID = "+customerId+" " +
-                        "AND ('"+startTime+"' BETWEEN Start AND End) " +
+                        "AND (('"+startTime+"' BETWEEN Start AND End) " +
                         "OR ('"+endTime+"' BETWEEN Start AND End) " +
                         "OR (Start BETWEEN '"+startTime+"' AND '"+endTime+"') " +
-                        "OR (End BETWEEN '"+startTime+"' AND '"+endTime+"') ";
+                        "OR (End BETWEEN '"+startTime+"' AND '"+endTime+"')) ";
         try {
             ResultSet rs = DBUtil.dbExecute(query);
             if(rs.next()) {
@@ -181,6 +181,22 @@ public class AppointmentDAO {
             
         } catch (SQLException e) {
             System.out.println("Error getting appointments for next 7 days data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    public static ObservableList<Appointment> getAllRecordsInNext15Minutes() throws ClassNotFoundException, SQLException {
+        String query = "select * from appointments WHERE Start BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 15 MINUTE)";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            ObservableList<Appointment> appointmentList = getAppointmentObjects(rs);
+            
+            return appointmentList;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting appointments for next 15 minutes data from database" + e);
             e.printStackTrace();
             throw e;
         }

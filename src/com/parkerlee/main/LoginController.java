@@ -5,6 +5,8 @@
  */
 package com.parkerlee.main;
 
+import com.parkerlee.model.Appointment;
+import com.parkerlee.model.AppointmentDAO;
 import com.parkerlee.model.Customer;
 import com.parkerlee.model.User;
 import com.parkerlee.model.UserDAO;
@@ -24,7 +26,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -133,7 +137,13 @@ public class LoginController implements Initializable {
                     stage.setScene(scene);
                     stage.show();
                     
+                    showAppointmentAlert();
+                    
                 } catch (IOException ex) {
+                    Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
                     Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
@@ -148,6 +158,30 @@ public class LoginController implements Initializable {
         
         loadingText.setText("");
         loginButton.setDisable(false);
+    }
+    
+    private void showAppointmentAlert() throws ClassNotFoundException, SQLException {
+        
+        String apptStr = "";
+        ObservableList<Appointment> apptList = AppointmentDAO.getAllRecordsInNext15Minutes();
+        
+        if (!apptList.isEmpty()) {
+            for (int i = 0; i < apptList.size(); i++) {
+                int apptId = apptList.get(i).getIdProperty().getValue();
+                String start = apptList.get(i).getStartTimeProperty().getValue();
+                
+                apptStr += "Appointment ID: " + apptId + ", Start: " + start + "\n";
+            }
+        
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, apptStr, ButtonType.OK);        
+            alert.showAndWait().filter(response -> response == ButtonType.OK);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No upcoming appointments", ButtonType.OK);        
+            alert.showAndWait().filter(response -> response == ButtonType.OK);
+        }
+        
+        
+        
     }
     
 }
