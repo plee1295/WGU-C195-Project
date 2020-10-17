@@ -44,10 +44,10 @@
             <Font size="30.0" />
          </font>
       </Label>
-      <Button layoutX="607.0" layoutY="120.0" mnemonicParsing="false" onAction="#addCustomerButtonPressed" prefHeight="27.0" prefWidth="114.0" text="Add Customer" />
-      <Button layoutX="607.0" layoutY="160.0" mnemonicParsing="false" onAction="#updateCustomerButtonPressed" text="Update Customer" />
-      <Button layoutX="607.0" layoutY="200.0" mnemonicParsing="false" onAction="#deleteCustomerButtonPressed" prefHeight="27.0" prefWidth="114.0" text="Delete Customer" />
-      <Button layoutX="568.0" layoutY="273.0" mnemonicParsing="false" onAction="#getAppointmentsButtonPressed" text="Get Appointments for Customer" />
+      <Button fx:id="addCustomerButton" layoutX="607.0" layoutY="120.0" mnemonicParsing="false" onAction="#addCustomerButtonPressed" prefHeight="27.0" prefWidth="114.0" text="Add Customer" />
+      <Button fx:id="updateCustomerButton" layoutX="607.0" layoutY="160.0" mnemonicParsing="false" onAction="#updateCustomerButtonPressed" text="Update Customer" />
+      <Button fx:id="deleteCustomerButton" layoutX="607.0" layoutY="200.0" mnemonicParsing="false" onAction="#deleteCustomerButtonPressed" prefHeight="27.0" prefWidth="114.0" text="Delete Customer" />
+      <Button fx:id="getAppointmentsButton" layoutX="568.0" layoutY="273.0" mnemonicParsing="false" onAction="#getAppointmentsButtonPressed" text="Get Appointments for Customer" />
       <Label fx:id="userIdText" layoutX="14.0" layoutY="24.0" prefHeight="17.0" prefWidth="143.0" />
       <Button layoutX="568.0" layoutY="237.0" mnemonicParsing="false" onAction="#scheduleButtonPressed" prefHeight="27.0" prefWidth="192.0" text="Get Full Schedule" />
       <Button layoutX="13.0" layoutY="52.0" mnemonicParsing="false" onAction="#logoutButtonPressed" text="Logout" />

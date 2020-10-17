@@ -29,6 +29,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -85,7 +86,24 @@ public class CustomerController {
     private Label userIdText;
     
     @FXML
+    private Button addCustomerButton;
+
+    @FXML
+    private Button updateCustomerButton;
+
+    @FXML
+    private Button deleteCustomerButton;
+
+    @FXML
+    private Button getAppointmentsButton;
+    
+    @FXML
     public void initialize() throws Exception {
+        
+        addCustomerButton.setDisable(false);
+        updateCustomerButton.setDisable(true);
+        deleteCustomerButton.setDisable(true);
+        getAppointmentsButton.setDisable(true);
         
         // Initialize starting values for customerTableView
         customerIdColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty().asObject());
@@ -112,6 +130,11 @@ public class CustomerController {
         // get selected customer data
         customerTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                updateCustomerButton.setDisable(false);
+                deleteCustomerButton.setDisable(false);
+                getAppointmentsButton.setDisable(false);
+                addCustomerButton.setDisable(true);
+                
                 functionTitleText.setText("Update/Delete");
                 
                 Customer customer = customerTableView.getSelectionModel().getSelectedItem();
@@ -167,7 +190,13 @@ public class CustomerController {
         userIdText.setText("User ID: " + id);
     }
     
-    // TODO: add validation
+    private boolean isCustomerValid(String name, String address, String country, String zip, String phone, String fld) {
+        if (name.isBlank() || address.isBlank() || country.isBlank() || zip.isBlank() || phone.isBlank() || fld.isBlank()) {
+            return false;
+        }
+        return true;
+    }
+    
     @FXML
     void addCustomerButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         try {
@@ -179,21 +208,33 @@ public class CustomerController {
             
             String customerFLD = firstLevelDivisionComboBox.getValue();
             int selectedDivisionId = DivisionDAO.getSelectedDivisionId(customerFLD);
+            
+            boolean isValidCustomer = isCustomerValid(customerName, customerAddress, customerCountry, customerPostalCode, customerPhoneNumber, customerFLD);
         
-            CustomerDAO.insertCustomer(customerName, customerAddress, selectedDivisionId, customerPostalCode, customerPhoneNumber);
+            if (isValidCustomer) {
+                CustomerDAO.insertCustomer(customerName, customerAddress, selectedDivisionId, customerPostalCode, customerPhoneNumber);
+
+                ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
+                populateTable(customerList);
+
+                clearTextFields();
+                
+                addCustomerButton.setDisable(false);
+                updateCustomerButton.setDisable(true);
+                deleteCustomerButton.setDisable(true);
+                getAppointmentsButton.setDisable(true);
+                
+            } else {
+                Alert alert = new Alert(AlertType.WARNING, "No field can be left blank.", ButtonType.OK);
+                alert.showAndWait().filter(response -> response == ButtonType.OK);
+            }
             
-            ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
-            populateTable(customerList);
-            
-            clearTextFields();
             
         } catch (SQLException e) {
             System.out.println("Error adding employee to database: " + e);
             e.printStackTrace();
             throw e;
-        }
-        
-        
+        } 
     }
     
     @FXML
@@ -203,6 +244,7 @@ public class CustomerController {
             String address = customerAddressTextField.getText();
             String zip = postalCodeTextField.getText();
             String phone = phoneNumberTextField.getText();
+            String country = countryComboBox.getValue();
             
             Customer customer = customerTableView.getSelectionModel().getSelectedItem();
             int customerId = customer.getIdProperty().getValue();
@@ -210,10 +252,27 @@ public class CustomerController {
             String customerFLD = firstLevelDivisionComboBox.getValue();
             int divisionId = DivisionDAO.getSelectedDivisionId(customerFLD);
             
-            CustomerDAO.updateCustomer(customerId, name, address, divisionId, zip, phone);
+            boolean isValidCustomer = isCustomerValid(name, address, country, zip, phone, customerFLD);
             
-            ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
-            populateTable(customerList);
+            if (isValidCustomer) {
+               CustomerDAO.updateCustomer(customerId, name, address, divisionId, zip, phone);
+            
+                ObservableList<Customer> customerList = CustomerDAO.getAllRecords();
+                populateTable(customerList);
+            
+                clearTextFields(); 
+                
+                addCustomerButton.setDisable(false);
+                updateCustomerButton.setDisable(true);
+                deleteCustomerButton.setDisable(true);
+                getAppointmentsButton.setDisable(true);
+                
+            } else {
+                Alert alert = new Alert(AlertType.WARNING, "Unable to update customer.", ButtonType.OK);
+                alert.showAndWait().filter(response -> response == ButtonType.OK);
+            }
+            
+            
             
         } catch (SQLException e) {
             System.out.println("Error occurred while updating customer data: " + e);
@@ -242,14 +301,19 @@ public class CustomerController {
             }
         
             clearTextFields();
+            
+            addCustomerButton.setDisable(false);
+            updateCustomerButton.setDisable(true);
+            deleteCustomerButton.setDisable(true);
+            getAppointmentsButton.setDisable(true);
         
             Alert alert = new Alert(AlertType.INFORMATION, "customer has been successfully deleted!", ButtonType.OK);
-                alert.showAndWait().filter(response -> response == ButtonType.OK);
+            alert.showAndWait().filter(response -> response == ButtonType.OK);
             
             functionTitleText.setText("Add");
         } else {
             Alert alert = new Alert(AlertType.WARNING, "Cannot delete customer with upcoming appointments.", ButtonType.OK);
-                alert.showAndWait().filter(response -> response == ButtonType.OK);
+            alert.showAndWait().filter(response -> response == ButtonType.OK);
         }  
     }
     
