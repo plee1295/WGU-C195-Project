@@ -15,6 +15,8 @@ import com.parkerlee.util.Translator;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +35,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
 
 /**
  * FXML Controller class
@@ -106,7 +110,7 @@ public class LoginController implements Initializable {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         
-        
+        Logger logger = Logger.getLogger("LoginAttempts");  
         
         ObservableList<User> userList = UserDAO.getAllRecords();
         
@@ -118,6 +122,16 @@ public class LoginController implements Initializable {
                 errorText.setText("");
                 
                 try {
+                    // This block configure the logger with handler and formatter  
+                    FileHandler fh = new FileHandler("/Users/parkerlee/NetBeansProjects/ScheduleApp/login_attempts.txt");
+                    logger.addHandler(fh);
+                    SimpleFormatter formatter = new SimpleFormatter();
+                    fh.setFormatter(formatter);
+
+                    // the following statement is used to log any messages 
+                    String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                    logger.info("Username: " + dbUsername + ", DateTime: " + timestamp + ", SUCCESS");
+                    
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerView.fxml"));
                     Parent root = loader.load();
                     Scene scene = new Scene(root);
@@ -148,6 +162,23 @@ public class LoginController implements Initializable {
                 }
                 
             } else {
+                // This block configure the logger with handler and formatter  
+                FileHandler fh;
+                try {
+                    fh = new FileHandler("/Users/parkerlee/NetBeansProjects/ScheduleApp/login_attempts.txt");
+                    logger.addHandler(fh);
+                    SimpleFormatter formatter = new SimpleFormatter();
+                    fh.setFormatter(formatter);
+
+                    // the following statement is used to log any messages 
+                    String timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                    logger.info("Username: " + dbUsername + ", DateTime: " + timestamp + ", FAILURE");
+                } catch (IOException ex) {
+                    Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SecurityException ex) {
+                    Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
                 if (lang.equals("fr")) {
                     errorText.setText("Une erreur s'est produite avec le nom d'utilisateur et / ou le mot de passe fournis.");
                 } else {
