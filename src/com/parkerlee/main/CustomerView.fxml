@@ -51,5 +51,6 @@
       <Label fx:id="userIdText" layoutX="14.0" layoutY="24.0" prefHeight="17.0" prefWidth="143.0" />
       <Button layoutX="568.0" layoutY="237.0" mnemonicParsing="false" onAction="#scheduleButtonPressed" prefHeight="27.0" prefWidth="192.0" text="Get Full Schedule" />
       <Button layoutX="13.0" layoutY="52.0" mnemonicParsing="false" onAction="#logoutButtonPressed" text="Logout" />
+      <Button layoutX="86.0" layoutY="52.0" mnemonicParsing="false" onAction="#getReportsButtonPressed" text="Get Reports" />
    </children>
 </AnchorPane>

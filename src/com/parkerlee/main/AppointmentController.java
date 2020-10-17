@@ -369,6 +369,25 @@ public class AppointmentController implements Initializable {
         return false;
     }
     
+    private String getTypeString(String type) {
+        type = type.toLowerCase();
+        
+        if (type.equals("onboard") || type.equals("onboarding")) {
+            return "onboard";
+        } else if (type.equals("update")) {
+            return "update";
+        } else {
+            return "";
+        }
+    }
+    
+    private boolean validateType(String type) {
+        if (type.equals("onboard") || type.equals("update")) {
+            return true;
+        }
+        return false;
+    }
+    
     @FXML
     void addAppointmentButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         try {
@@ -376,11 +395,20 @@ public class AppointmentController implements Initializable {
             String description = descriptionTextField.getText();
             String location = locationTextField.getText();
             String contact = contactComboBox.getValue();
-            String type = typeTextField.getText();
             String startDate = startDatePicker.getValue().toString();
             String startTime = startTimeTextField.getText();
             String endDate = endDatePicker.getValue().toString();
             String endTime = endTimeTextField.getText();
+            
+            String typeStr = typeTextField.getText().toLowerCase();
+            String type;
+            if (typeStr.equals("onboard") || typeStr.equals("update")) {
+                type = typeStr;
+            } else {
+                Alert alert = new Alert(AlertType.WARNING, "Type text field must either be 'onboard' or 'update'.", ButtonType.OK);
+                alert.showAndWait().filter(response -> response == ButtonType.OK);
+                return;
+            }
             
             String customerIdStr = customerIdText.getText();
             int customerId = Integer.parseInt(customerIdStr.split(" ")[2]);

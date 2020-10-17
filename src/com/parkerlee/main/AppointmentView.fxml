@@ -37,7 +37,7 @@
       <TextField fx:id="descriptionTextField" layoutX="235.0" layoutY="184.0" prefHeight="27.0" prefWidth="161.0" promptText="Description" />
       <TextField fx:id="locationTextField" layoutX="234.0" layoutY="226.0" prefHeight="27.0" prefWidth="161.0" promptText="Location" />
       <ComboBox fx:id="contactComboBox" layoutX="235.0" layoutY="268.0" prefHeight="27.0" prefWidth="159.0" promptText="Select Contact" />
-      <TextField fx:id="typeTextField" layoutX="424.0" layoutY="105.0" prefHeight="27.0" prefWidth="187.0" promptText="Appointment Type" />
+      <TextField fx:id="typeTextField" layoutX="424.0" layoutY="105.0" prefHeight="27.0" prefWidth="187.0" promptText="&quot;Onboard&quot; or &quot;Update&quot;" />
       <DatePicker fx:id="startDatePicker" layoutX="424.0" layoutY="144.0" promptText="Start Date" />
       <TextField fx:id="startTimeTextField" layoutX="424.0" layoutY="185.0" prefHeight="27.0" prefWidth="189.0" promptText="Start Time (ex. 9:00 AM)" />
       <DatePicker fx:id="endDatePicker" layoutX="425.0" layoutY="226.0" promptText="End Date" />

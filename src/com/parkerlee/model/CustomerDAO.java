@@ -88,4 +88,20 @@ public class CustomerDAO {
         }
     }
     
+    public static ObservableList<Customer> getAllRecordsAddedThisWeek() throws ClassNotFoundException, SQLException {
+        String query = "select * from customers WHERE Create_Date >= DATE_ADD(NOW(), INTERVAL -7 DAY)";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            ObservableList<Customer> customerList = getCustomerObjects(rs);
+            
+            return customerList;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting customers added in last 7 days data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
 }

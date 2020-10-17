@@ -202,4 +202,20 @@ public class AppointmentDAO {
         }
     }
     
+    public static ObservableList<Appointment> getAppointmentsByType() throws ClassNotFoundException, SQLException {
+        String query = "select * from appointments";
+        
+        try {
+            ResultSet rs = DBUtil.dbExecute(query);
+            ObservableList<Appointment> appointmentList = getAppointmentObjects(rs);
+            
+            return appointmentList;
+            
+        } catch (SQLException e) {
+            System.out.println("Error getting appointment data from database" + e);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+            
 }
