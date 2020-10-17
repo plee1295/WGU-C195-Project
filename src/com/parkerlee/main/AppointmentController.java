@@ -40,6 +40,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
@@ -123,12 +124,28 @@ public class AppointmentController implements Initializable {
     
     @FXML
     private Label functionTitleText;
+    
+    @FXML
+    private Button addAppointmentButton;
+
+    @FXML
+    private Button updateAppointmentButton;
+
+    @FXML
+    private Button deleteAppointmentButton;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        startDatePicker.setValue(LocalDate.now());
+        endDatePicker.setValue(LocalDate.now());
+        
+        addAppointmentButton.setDisable(false);
+        updateAppointmentButton.setDisable(true);
+        deleteAppointmentButton.setDisable(true);
         
         functionTitleText.setText("Add");
 
@@ -177,6 +194,10 @@ public class AppointmentController implements Initializable {
         // get selected appointment data
         appointmentTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                addAppointmentButton.setDisable(true);
+                updateAppointmentButton.setDisable(false);
+                deleteAppointmentButton.setDisable(false);
+                
                 functionTitleText.setText("Update/Delete");
                 
                 Appointment appt = appointmentTableView.getSelectionModel().getSelectedItem();
@@ -391,6 +412,7 @@ public class AppointmentController implements Initializable {
     @FXML
     void addAppointmentButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         try {
+            String id = appointmentIdTextField.getText();
             String title = titleTextField.getText();
             String description = descriptionTextField.getText();
             String location = locationTextField.getText();
@@ -399,7 +421,7 @@ public class AppointmentController implements Initializable {
             String startTime = startTimeTextField.getText();
             String endDate = endDatePicker.getValue().toString();
             String endTime = endTimeTextField.getText();
-            
+
             String typeStr = typeTextField.getText().toLowerCase();
             String type;
             if (typeStr.equals("onboard") || typeStr.equals("update")) {
@@ -409,41 +431,48 @@ public class AppointmentController implements Initializable {
                 alert.showAndWait().filter(response -> response == ButtonType.OK);
                 return;
             }
-            
+
             String customerIdStr = customerIdText.getText();
             int customerId = Integer.parseInt(customerIdStr.split(" ")[2]);
-            
+
             String userIdStr = userIdText.getText();
             int userId = Integer.parseInt(userIdStr.split(" ")[2]);
-            
+
             int contactId = ContactDAO.getContactIdFromName(contact);
-            
+
             LocalDateTime startTimestamp = convertToTimestamp(startDate, startTime);
             LocalDateTime endTimestamp = convertToTimestamp(endDate, endTime);
-            
+
             LocalDateTime startEST = convertToEST(startDate, startTime);
             LocalDateTime endEST = convertToEST(endDate, endTime);
-            
+
             boolean isValidAppointmentTime = validateAppointmentTime(startEST, endEST);
             boolean isDuplicateAppointmentTime = AppointmentDAO.isDuplicateAppointmentTime(customerId, startTimestamp, endTimestamp);
-        
-            // if time is correct
+
             if (isValidAppointmentTime) {
                 if (!isDuplicateAppointmentTime) {
                     AppointmentDAO.insertAppointment(title, description, location, type, startTimestamp, endTimestamp, customerId, userId, contactId);
-            
+
                     ObservableList<Appointment> appointmentList = AppointmentDAO.getAllRecordsForCustomer(customerId);
                     populateTable(appointmentList);
-            
+
                     clearTextFields();
+
+                    addAppointmentButton.setDisable(false);
+                    updateAppointmentButton.setDisable(true);
+                    deleteAppointmentButton.setDisable(true);
+
+                    startDatePicker.setValue(LocalDate.now());
+                    endDatePicker.setValue(LocalDate.now());
+
                 } else {
                     Alert alert = new Alert(AlertType.WARNING, "Customer already has an appointment scheduled at this time.", ButtonType.OK);
-                        alert.showAndWait().filter(response -> response == ButtonType.OK);
+                    alert.showAndWait().filter(response -> response == ButtonType.OK);
                 }
-                
+
             } else {
                 Alert alert = new Alert(AlertType.WARNING, "Appointment must be made between 8am-10pm EST.", ButtonType.OK);
-                    alert.showAndWait().filter(response -> response == ButtonType.OK);
+                alert.showAndWait().filter(response -> response == ButtonType.OK);
             }
 
         } catch (SQLException e) {
@@ -485,6 +514,10 @@ public class AppointmentController implements Initializable {
             ObservableList<Appointment> apptList = AppointmentDAO.getAllRecordsForCustomer(customerId);
             populateTable(apptList);
             
+            addAppointmentButton.setDisable(false);
+            updateAppointmentButton.setDisable(true);
+            deleteAppointmentButton.setDisable(true);
+            
         } catch (SQLException e) {
             System.out.println("Error occurred while updating customer data: " + e);
             e.printStackTrace();
@@ -514,6 +547,10 @@ public class AppointmentController implements Initializable {
         }
   
         clearTextFields();
+        
+        addAppointmentButton.setDisable(false);
+        updateAppointmentButton.setDisable(true);
+        deleteAppointmentButton.setDisable(true);
         
         Alert alert = new Alert(AlertType.INFORMATION, "Appointment has been successfully deleted!", ButtonType.OK);
             alert.showAndWait().filter(response -> response == ButtonType.OK);
