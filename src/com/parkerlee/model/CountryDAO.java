@@ -12,11 +12,18 @@ import java.sql.ResultSet;
 import javafx.collections.FXCollections;
 
 /**
- *
+ * The country data access object
  * @author parkerlee
  */
 public class CountryDAO {
     
+    /**
+     * Creates an observable array list of countries that will be used to execute queries
+     * @param rs    the result set
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     private static ObservableList<Country> getCountryObjects(ResultSet rs) throws SQLException, ClassNotFoundException {
         try {
             ObservableList<Country> countryList = FXCollections.observableArrayList();
@@ -38,6 +45,12 @@ public class CountryDAO {
         }
     }
     
+    /**
+     * Gets all country records in the database
+     * @return  an observable list of country objects
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static ObservableList<Country> getAllRecords() throws ClassNotFoundException, SQLException {
         String query = "select * from countries";
         
@@ -54,6 +67,13 @@ public class CountryDAO {
         }
     }
     
+    /**
+     * Gets the country id from the country name
+     * @param countryName   the country name
+     * @return              the country id
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static int getSelectedCountryId(String countryName) throws ClassNotFoundException, SQLException {
         String query = "select Country_ID from countries where Country = '"+countryName+"' ";
         
@@ -73,6 +93,13 @@ public class CountryDAO {
         }
     }
     
+    /**
+     * Gets the country id from the first level division id from the first level division table
+     * @param id    the first level division id
+     * @return      the country id
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static int getCountryIdFromDivisionId(int id) throws ClassNotFoundException, SQLException {
         String query = "select COUNTRY_ID from first_level_divisions where Division_ID = "+id+"";
         
@@ -92,6 +119,13 @@ public class CountryDAO {
         }
     }
     
+    /**
+     * Gets the country name from the country id
+     * @param id    the country id
+     * @return      the country name
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static String getCountryName(int id) throws ClassNotFoundException, SQLException {
         String query = "select Country from countries where Country_ID = "+id+"";
         

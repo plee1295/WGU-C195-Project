@@ -12,11 +12,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
+ * The first level division data access object
  * @author parkerlee
  */
 public class DivisionDAO {
     
+    /**
+     * Creates an observable array list of first level divisions that will be used to execute queries
+     * @param rs
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     private static ObservableList<Division> getDivisionObjects(ResultSet rs) throws SQLException, ClassNotFoundException {
         try {
             ObservableList<Division> divisionList = FXCollections.observableArrayList();
@@ -39,6 +46,12 @@ public class DivisionDAO {
         }
     }
     
+    /**
+     * Gets all first level division records in the first level division table of the database
+     * @return  an observable list of first level division objects
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static ObservableList<Division> getAllRecords() throws ClassNotFoundException, SQLException {
         String query = "select * from first_level_divisions";
         
@@ -55,6 +68,13 @@ public class DivisionDAO {
         }
     }
     
+    /**
+     * Gets the first level division id from the first level division name
+     * @param divisionName  the division name
+     * @return              the division id associated with the name
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static int getSelectedDivisionId(String divisionName) throws ClassNotFoundException, SQLException {
         String query = "select Division_ID from first_level_divisions where Division = '"+divisionName+"' ";
         
@@ -74,6 +94,13 @@ public class DivisionDAO {
         }
     }
     
+    /**
+     * Gets the first level division name from the first level division id
+     * @param id    the first level division id
+     * @return      the first level division name associated with the id
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static String getDivisionName(int id) throws ClassNotFoundException, SQLException {
         String query = "select Division from first_level_divisions where Division_ID = "+id+"";
         

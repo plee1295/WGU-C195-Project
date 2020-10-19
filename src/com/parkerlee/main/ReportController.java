@@ -38,32 +38,54 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 /**
- * FXML Controller class
+ * FXML Controller class for reports
  *
  * @author parkerlee
  */
 public class ReportController implements Initializable {
     
+    /**
+     * The label to display the current user id
+     */
     @FXML
     private Label userIdText;
     
+    /**
+     * The radio button to get appointments by type
+     */
     @FXML
     private RadioButton apptsByType;
 
+    /**
+     * The radio button to get appointments by month
+     */
     @FXML
     private RadioButton apptsByMonth;
 
+    /**
+     * The radio button to get schedule for contacts
+     */
     @FXML
     private RadioButton contactSchedules;
 
+    /**
+     * The radio button to get customers recently added
+     */
     @FXML
     private RadioButton customersAdded;
     
+    /**
+     * The text area to show report data
+     */
     @FXML
     private TextArea textArea;
 
     /**
-     * Initializes the controller class.
+     * Initializes the controller class. Sets up the toggle group and radio buttons. 
+     * Handles the selection of radio buttons. 
+     * 
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -75,8 +97,10 @@ public class ReportController implements Initializable {
         contactSchedules.setToggleGroup(group);
         customersAdded.setToggleGroup(group);
         
+        // Initialze with default radio button selected
         handleApptsByType();
         
+        // Handle appointment by type radio button selected
         apptsByType.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
                 if (isNowSelected) { 
@@ -86,6 +110,7 @@ public class ReportController implements Initializable {
             }
         });
         
+        // Handle appointment by month radio button selected
         apptsByMonth.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
                 if (isNowSelected) {
@@ -129,6 +154,7 @@ public class ReportController implements Initializable {
             }
         });
         
+        // Handle contact schedules radio button selected
         contactSchedules.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
                 if (isNowSelected) { 
@@ -191,6 +217,7 @@ public class ReportController implements Initializable {
             }
         });
         
+        // Handle customers added radio button selected
         customersAdded.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
                 if (isNowSelected) {
@@ -216,6 +243,12 @@ public class ReportController implements Initializable {
 
     } 
     
+    /**
+     * Helper function to convert a number to the appropriate month.
+     * 
+     * @param month the number to be converted to a month name
+     * @return      the month name
+     */
     private String convertNumToMonth(String month) {
         switch (month) {
             case "01":
@@ -247,6 +280,9 @@ public class ReportController implements Initializable {
         }
     }
     
+    /**
+     * Gets the report to display appointments by type.
+     */
     private void handleApptsByType() {
         try {
             ObservableList<Appointment> apptList = AppointmentDAO.getAllRecords();
@@ -278,11 +314,21 @@ public class ReportController implements Initializable {
         }
     }
     
+    /**
+     * Receives user id data from the customer controller to display in a label.
+     * 
+     * @param id
+     */
     public void getData(int id) {
         int userId = id;
         userIdText.setText("User ID: " + userId);
     }
     
+    /**
+     * Handles the back button pressed. Returns the user back to the customer view. 
+     * 
+     * @param event
+     */
     @FXML
     void backButtonPressed (ActionEvent event) {
         try {

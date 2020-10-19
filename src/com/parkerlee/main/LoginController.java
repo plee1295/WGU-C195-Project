@@ -39,44 +39,78 @@ import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
 
 /**
- * FXML Controller class
+ * FXML Controller class for user authentication
  *
  * @author parkerlee
  */
 public class LoginController implements Initializable {
     
+    /**
+     * The label to display the title
+     */
     @FXML
     private Label titleText;
 
+    /**
+     * The text field to collect the username
+     */
     @FXML
     private TextField usernameTextField;
 
+    /**
+     * The text field to collect the password
+     */
     @FXML
     private PasswordField passwordTextField;
 
+    /**
+     * The button to login the user
+     */
     @FXML
     private Button loginButton;
 
+    /**
+     * The label to inform the user of how to login
+     */
     @FXML
     private Label credentialsText;
 
+    /**
+     * The label to inform the user of the correct username to login
+     */
     @FXML
     private Label usernameText;
 
+    /**
+     * The label to inform the user of the correct password to login
+     */
     @FXML
     private Label passwordText;
     
+    /**
+     * The label to display if a user validation error occurs
+     */
     @FXML
     private Label errorText;
     
+    /* The label to display while the controller is working on authentication
+     * 
+     */
     @FXML
     private Label loadingText;
     
+    /**
+     * The label to display the country and time zone of the system
+     */
     @FXML
     private Label userLocationText;
 
     /**
-     * Initializes the controller class.
+     * Initializes the controller class. Gets user location data. Performs translation in english 
+     * or french based on the system language. 
+     * 
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -96,6 +130,16 @@ public class LoginController implements Initializable {
         }
     }   
     
+    /**
+     * Handles the login button pressed. Validates the username and password data is valid
+     * and updates the labels accordingly. If valid, navigates the user to the customer view. 
+     * Logs the attempt to login_attempts.txt.
+     * 
+     * @param event
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws IOException
+     */
     @FXML
     void loginButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException, IOException {
         
@@ -114,6 +158,12 @@ public class LoginController implements Initializable {
         
         ObservableList<User> userList = UserDAO.getAllRecords();
         
+        /**
+         * This lambda expression is used to validate the username and password
+         * by checking the inputs with current database data. The use of the lambda 
+         * expression here is to avoid the use of a traditional for-loop and
+         * easily loop over all of the user objects inside of the user list.
+         */
         userList.forEach((user) -> {
             String dbUsername = user.getUsernameProperty().getValue();
             String dbPassword = user.getPasswordProperty().getValue();
@@ -191,6 +241,13 @@ public class LoginController implements Initializable {
         loginButton.setDisable(false);
     }
     
+    /**
+     * Shows an alert to the user upon successful login. This alert informs the user
+     * whether any appointments are scheduled within the next 15 minutes. 
+     * 
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     private void showAppointmentAlert() throws ClassNotFoundException, SQLException {
         
         String apptStr = "";

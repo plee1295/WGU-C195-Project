@@ -13,6 +13,10 @@ import java.util.Locale;
  */
 public class Translator {
     
+    /**
+     * Gets the default language of the system user
+     * @return  a string containing the default system language
+     */
     public static String getUserLanguage() {
         String currentLocale = Locale.getDefault().getLanguage();
         

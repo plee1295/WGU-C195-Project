@@ -12,11 +12,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
+ * The contact data access object
  * @author parkerlee
  */
 public class ContactDAO {
     
+    /**
+     * Creates an observable array list of contacts that will be used to execute queries
+     * @param rs    the result set
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     private static ObservableList<Contact> getContactObjects(ResultSet rs) throws SQLException, ClassNotFoundException {
         try {
             ObservableList<Contact> contactList = FXCollections.observableArrayList();
@@ -39,6 +46,12 @@ public class ContactDAO {
         }
     }
     
+    /**
+     * Gets all contact records
+     * @return  an observable list of contacts
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static ObservableList<Contact> getAllRecords() throws ClassNotFoundException, SQLException {
         String query = "select * from contacts";
         
@@ -55,6 +68,13 @@ public class ContactDAO {
         }
     }
     
+    /**
+     * Gets the contact id from the contact name
+     * @param name  the contact name 
+     * @return      the contact id
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static int getContactIdFromName(String name) throws ClassNotFoundException, SQLException {
         String query = "select Contact_ID from contacts where Contact_Name = '"+name+"'";
         
@@ -74,6 +94,13 @@ public class ContactDAO {
         }
     }
     
+    /**
+     * Gets the contact name from the id
+     * @param id    the contact id
+     * @return      the contact name
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static String getContactNameFromId(int id) throws ClassNotFoundException, SQLException {
         String query = "select Contact_Name from contacts where Contact_ID = "+id+"";
         

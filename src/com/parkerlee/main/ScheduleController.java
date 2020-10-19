@@ -31,56 +31,103 @@ import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 /**
- * FXML Controller class
+ * FXML Controller class for schedule
  *
  * @author parkerlee
  */
 public class ScheduleController implements Initializable {
     
+    /**
+     * The radio button to show schedule for this week
+     */
     @FXML
     private RadioButton thisWeek;
 
+    /**
+     * The radio button to show schedule for this month
+     */
     @FXML
     private RadioButton thisMonth;
 
+    /**
+     * The radio button to show all appointments schedule
+     */
     @FXML
     private RadioButton all;
     
+    /**
+     * The table view to display appointment data
+     */
     @FXML
     private TableView<Appointment> appointmentTableView;
     
+    /**
+     * The column to display appointment id
+     */
     @FXML
     private TableColumn<Appointment, Integer> apptIdColumn;
 
+    /**
+     * The column to display appointment title
+     */
     @FXML
     private TableColumn<Appointment, String> titleColumn;
 
+    /**
+     * The column to display appointment description
+     */
     @FXML
     private TableColumn<Appointment, String> descriptionColumn;
 
+    /**
+     * The column to display appointment location
+     */
     @FXML
     private TableColumn<Appointment, String> locationColumn;
 
+    /**
+     * The column to display appointment contact id
+     */
     @FXML
     private TableColumn<Appointment, Integer> contactIdColumn;
 
+    /**
+     * The column to display appointment type
+     */
     @FXML
     private TableColumn<Appointment, String> typeColumn;
 
+    /**
+     * The column to display appointment start date/time
+     */
     @FXML
     private TableColumn<Appointment, String> startColumn;
 
+    /**
+     * The column to display appointment end date/time
+     */
     @FXML
     private TableColumn<Appointment, String> endColumn;
 
+    /**
+     * The column to display appointment customer id
+     */
     @FXML
     private TableColumn<Appointment, Integer> customerIdColumn;
     
+    /**
+     * The label to display the current user id
+     */
     @FXML
     private Label userIdText;
 
     /**
-     * Initializes the controller class.
+     * Initializes the controller class. Sets up toggle group and radio buttons.
+     * Sets up table view and columns. Gets appointment data to display. Handles
+     * selection of each radio button.
+     * 
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -161,15 +208,30 @@ public class ScheduleController implements Initializable {
         });
     }
     
+    /**
+     * Displays appointment data in the table view
+     * 
+     * @param appointmentList
+     */
     private void populateTable(ObservableList<Appointment> appointmentList) {
         appointmentTableView.setItems(appointmentList);
     }
     
+    /**
+     * Receives user id data from the customer controller.
+     * 
+     * @param id
+     */
     public void getData(int id) {
         int userId = id;
         userIdText.setText("User ID: " + userId);
     }
     
+    /**
+     * Handles the back button pressed. Returns the user back to the customer view. 
+     * 
+     * @param event
+     */
     @FXML
     void backButtonPressed (ActionEvent event) {
         try {

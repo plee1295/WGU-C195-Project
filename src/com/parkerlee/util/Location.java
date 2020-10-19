@@ -14,6 +14,10 @@ import java.util.TimeZone;
  */
 public class Location {
     
+    /**
+     * Gets the location information of the system user. 
+     * @return  a string containing the default country and time zone of the system user
+     */
     public static String getUserLocationInfo() {
         
         Locale currentLocale = Locale.getDefault();

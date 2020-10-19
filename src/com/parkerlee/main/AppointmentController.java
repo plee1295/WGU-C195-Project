@@ -46,96 +46,179 @@ import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
 
 /**
- * FXML Controller class
+ * FXML Controller class for appointments
  *
  * @author parkerlee
  */
 
 public class AppointmentController implements Initializable {
     
+    /**
+     * The label to generate the current customer name
+     */
     @FXML
     private Label titleText;
     
+    /**
+     * The label to display the current customer id
+     */
     @FXML
     private Label customerIdText;
     
+    /**
+     * The table to display the appointment data
+     */
     @FXML
     private TableView<Appointment> appointmentTableView;
 
+    /**
+     * The column to display appointment id data
+     */
     @FXML
     private TableColumn<Appointment, Integer> apptIdColumn;
 
+    /**
+     * The column to display appointment title data
+     */
     @FXML
     private TableColumn<Appointment, String> titleColumn;
 
+    /**
+     * The column to display appointment description data
+     */
     @FXML
     private TableColumn<Appointment, String> descriptionColumn;
 
+    /**
+     * The column to display appointment location data
+     */
     @FXML
     private TableColumn<Appointment, String> locationColumn;
 
+    /**
+     * The column to display appointment contact id data
+     */
     @FXML
     private TableColumn<Appointment, Integer> contactIdColumn;
 
+    /**
+     * The column to display appointment type data
+     */
     @FXML
     private TableColumn<Appointment, String> typeColumn;
 
+    /**
+     * The column to display appointment start time data
+     */
     @FXML
     private TableColumn<Appointment, String> startColumn;
 
+    /**
+     * The column to display appointment end time data
+     */
     @FXML
     private TableColumn<Appointment, String> endColumn;
 
+    /**
+     * The column to display appointment customer id data
+     */
     @FXML
     private TableColumn<Appointment, Integer> customerIdColumn;
 
+    /**
+     * The text field to display appointment id data
+     */
     @FXML
     private TextField appointmentIdTextField;
 
+    /**
+     * The text field to collect and display appointment title data
+     */
     @FXML
     private TextField titleTextField;
 
+    /**
+     * The text field to collect and display appointment description data
+     */
     @FXML
     private TextField descriptionTextField;
 
+    /**
+     * The text field to collect and display appointment location data
+     */
     @FXML
     private TextField locationTextField;
 
+    /**
+     * The combo box to collect and display appointment contact data
+     */
     @FXML
     private ComboBox<String> contactComboBox;
 
+    /**
+     * The text field to collect and display appointment type data
+     */
     @FXML
     private TextField typeTextField;
 
+    /**
+     * The date picker to collect and display appointment start date data
+     */
     @FXML
     private DatePicker startDatePicker;
 
+    /**
+     * The text field to collect and display appointment start time data
+     */
     @FXML
     private TextField startTimeTextField;
 
+    /**
+     * The date picker to collect and display appointment end date data
+     */
     @FXML
     private DatePicker endDatePicker;
 
+    /**
+     * The text field to collect and display appointment end time data
+     */
     @FXML
     private TextField endTimeTextField;
     
+    /**
+     * The label to display the current user id
+     */
     @FXML
     private Label userIdText;
     
+    /**
+     * The label to display the current function of the window
+     */
     @FXML
     private Label functionTitleText;
     
+    /**
+     * The button to add an appointment to the database
+     */
     @FXML
     private Button addAppointmentButton;
 
+    /**
+     * The button to update an appointment in the database
+     */
     @FXML
     private Button updateAppointmentButton;
 
+    /**
+     * The button to delete an appointment from the database
+     */
     @FXML
     private Button deleteAppointmentButton;
 
     /**
-     * Initializes the controller class.
+     * Initializes the appointment controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -241,6 +324,12 @@ public class AppointmentController implements Initializable {
         });
     }
     
+    /**
+     * Converts a string to a local date
+     * 
+     * @param date  the string to be converted
+     * @return      the local date converted from a string
+     */
     private LocalDate convertStringToLocalDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         LocalDate localDate = LocalDate.parse(date, formatter);
@@ -248,12 +337,18 @@ public class AppointmentController implements Initializable {
         return localDate;
     }
     
-    private String[] convertToDateAndTime(String str) { // 10/21/2020
+    /**
+     * Converts a string to a date and time held in an array
+     * 
+     * @param str   the string to be converted
+     * @return      the array holding the converted date and time
+     */
+    private String[] convertToDateAndTime(String str) {
         String[] ans = new String[2];
         
         String[] getDateAndTime = str.split(" ");
-        String date = getDateAndTime[0]; // 2020-10-21
-        String time = getDateAndTime[1]; // 15:30:00.0
+        String date = getDateAndTime[0];
+        String time = getDateAndTime[1];
         
         // format date
         String[] dateArr = date.split("-");
@@ -281,16 +376,30 @@ public class AppointmentController implements Initializable {
         return ans;
     }
     
+    /**
+     * Displays appointment data in the table view
+     * 
+     * @param appointmentList   the list of appointments used to populate the table view
+     */
     private void populateTable(ObservableList<Appointment> appointmentList) {
         appointmentTableView.setItems(appointmentList);
     }
     
+    /**
+     * Receives data from the customer controller to display in the window
+     * 
+     * @param customer  the current customer object sent from the customer controller
+     * @param userId    the current user id sent from the customer controller
+     */
     public void getData(Customer customer, int userId) {
         titleText.setText("Appointments for " + customer.getNameProperty().getValue());
         userIdText.setText("User ID: " + userId);
         customerIdText.setText("Customer ID: " + customer.getIdProperty().getValue());
     }
     
+    /**
+     * Clears all of the text fields in the window
+     */
     public void clearTextFields() {
         appointmentIdTextField.clear();
         titleTextField.clear();
@@ -304,6 +413,13 @@ public class AppointmentController implements Initializable {
         endTimeTextField.clear();
     }
     
+    /**
+     * Converts date and time strings to a LocalDateTime object in UTC
+     * 
+     * @param date  the date string to be converted
+     * @param time  the time string to be converted
+     * @return      the LocalDateTime object in UTC
+     */
     public LocalDateTime convertToTimestamp(String date, String time) {
 
         // get date
@@ -340,6 +456,13 @@ public class AppointmentController implements Initializable {
 
     }
     
+    /**
+     * Converts date and time strings into a LocalDateTime object in EST
+     * 
+     * @param date  the date string to be converted
+     * @param time  the time string to be converted
+     * @return      the LocalDateTime object in EST
+     */
     public LocalDateTime convertToEST(String date, String time) {
         
         // get date
@@ -375,6 +498,13 @@ public class AppointmentController implements Initializable {
         return timeToAdd;
     }
     
+    /**
+     * Validates the appointment time to be added or updated
+     * 
+     * @param start     the start LocalDateTime object
+     * @param end       the end LocalDateTime object
+     * @return          whether or not the LocalDateTime objects hold valid times
+     */
     public boolean validateAppointmentTime(LocalDateTime start, LocalDateTime end) {
         int startHour = start.getHour();
         int startMinute = start.getMinute();
@@ -390,6 +520,12 @@ public class AppointmentController implements Initializable {
         return false;
     }
     
+    /**
+     * Normalizes the appointment type
+     * 
+     * @param type  the type string input in the type text field
+     * @return      the validated type string
+     */
     private String getTypeString(String type) {
         type = type.toLowerCase();
         
@@ -402,6 +538,12 @@ public class AppointmentController implements Initializable {
         }
     }
     
+    /**
+     * Validates the data input in the type text field is correct
+     * 
+     * @param type  the input string in the type text field
+     * @return      whether the type string is valid or not
+     */
     private boolean validateType(String type) {
         if (type.equals("onboard") || type.equals("update")) {
             return true;
@@ -409,6 +551,14 @@ public class AppointmentController implements Initializable {
         return false;
     }
     
+    /**
+     * Handles the add appointment button press. Validates the input data and updates the database with
+     * the new appointment.
+     * 
+     * @param event
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     @FXML
     void addAppointmentButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         try {
@@ -428,6 +578,12 @@ public class AppointmentController implements Initializable {
                 type = typeStr;
             } else {
                 Alert alert = new Alert(AlertType.WARNING, "Type text field must either be 'onboard' or 'update'.", ButtonType.OK);
+                
+                /**
+                 * This lambda expression is used to validate the user response before continuing on with
+                 * the program execution. The use of the lambda expression here is to simplify the
+                 * syntax of the code. 
+                 */
                 alert.showAndWait().filter(response -> response == ButtonType.OK);
                 return;
             }
@@ -482,6 +638,14 @@ public class AppointmentController implements Initializable {
         }
     }
     
+    /**
+     * Handles the update appointment button press. Validates the input data and updates the database
+     * with the selected appointment. 
+     * 
+     * @param event
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     @FXML
     void updateAppointmentButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         try {
@@ -528,6 +692,13 @@ public class AppointmentController implements Initializable {
         functionTitleText.setText("Add");
     }
     
+    /**
+     * Handles the delete appointment button press. Removes the selected appointment from the database.
+     * 
+     * @param event
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     @FXML
     void deleteAppointmentButtonPressed(ActionEvent event) throws ClassNotFoundException, SQLException {
         
@@ -559,6 +730,11 @@ public class AppointmentController implements Initializable {
         
     }
     
+    /**
+     * Handles the back button pressed. Returns the user back to the customer view. 
+     * 
+     * @param event
+     */
     @FXML
     void backButtonPressed (ActionEvent event) {
         try {

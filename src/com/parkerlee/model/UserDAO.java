@@ -12,11 +12,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
+ * The user data access object
  * @author parkerlee
  */
 public class UserDAO {
     
+    /**
+     * Creates an observable array list of users that will be used to execute queries
+     * @param rs    the result set
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     private static ObservableList<User> getUserObjects(ResultSet rs) throws SQLException, ClassNotFoundException {
         try {
             ObservableList<User> userList = FXCollections.observableArrayList();
@@ -39,6 +46,12 @@ public class UserDAO {
         }
     }
     
+    /**
+     * Gets all user records in the database
+     * @return  an observable list of all users in the user table
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static ObservableList<User> getAllRecords() throws ClassNotFoundException, SQLException {
         String query = "select * from users";
         
@@ -55,6 +68,13 @@ public class UserDAO {
         }
     }
     
+    /**
+     * Get the user id of the currently logged in user
+     * @param username  the username of the current user
+     * @return          the id of the current user
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static int getCurrentUserId(String username) throws ClassNotFoundException, SQLException {
         String query = "select User_ID from users where User_Name = '"+username+"'";
         
